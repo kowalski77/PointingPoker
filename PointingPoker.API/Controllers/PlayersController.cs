@@ -64,4 +64,25 @@ public class PlayersController : ControllerBase
 
         return this.Ok();
     }
+    
+    [HttpPost("{id:guid}/reset")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ResetPoints(Guid id)
+    {
+        var player = await this.context.Players
+            .Include(x => x.Points)
+            .FirstOrDefaultAsync(x => x.Id == id)
+            .ConfigureAwait(false);
+        
+        if (player is null)
+        {
+            return this.NotFound();
+        }
+
+        player.Points = null;
+        await this.context.SaveChangesAsync().ConfigureAwait(false);
+
+        return this.Ok();
+    }
 }
