@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using PointingPoker.API.Data;
-using PointingPoker.API.Services;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 

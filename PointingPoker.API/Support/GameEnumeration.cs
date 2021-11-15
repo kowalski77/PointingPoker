@@ -4,6 +4,8 @@ namespace PointingPoker.API.Support;
 
 public class GameEnumeration<T>
 {
+    protected GameEnumeration(){}
+
     protected GameEnumeration(int id, string name)
     {
         (this.Id, this.Name) = (id, name);

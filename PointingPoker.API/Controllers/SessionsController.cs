@@ -30,17 +30,18 @@ public class SessionsController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<SessionDto>>> GetSessions()
     {
         var sessions = await this.context.Sessions
-            .Select(x => new SessionDto(x.Id, x.SessionId, Array.Empty<string>())).ToListAsync()
+            .Select(x => new SessionDto(x.Id, x.SessionId)).ToListAsync()
             .ConfigureAwait(false);
 
         return this.Ok(sessions);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<SessionDto>> GetSession(Guid id)
+    public async Task<ActionResult<SessionWithPlayersDto>> GetSession(Guid id)
     {
         var session = await this.context.Sessions
             .Include(x => x.Players)
+            .ThenInclude(x=>x.Points)
             .FirstOrDefaultAsync(x => x.Id == id)
             .ConfigureAwait(false);
 
@@ -49,7 +50,12 @@ public class SessionsController : ControllerBase
             return this.NotFound();
         }
 
-        return this.Ok(new SessionDto(session.Id, session.SessionId, session.Players.Select(x => x.Name)));
+        var sessionDto = new SessionWithPlayersDto(
+            session.Id, 
+            session.SessionId, 
+            session.Players.Select(x => (PlayerDto)x));
+
+        return this.Ok(sessionDto);
     }
 
     [HttpPost("{id:guid}/addplayer")]

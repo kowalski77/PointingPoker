@@ -4,6 +4,8 @@ namespace PointingPoker.API.Data;
 
 public class Point : GameEnumeration<Point>
 {
+    private Point(){}
+    
     public static readonly Point Zero = new(0, nameof(Zero), "0 points");
     public static readonly Point One = new(1, nameof(One), "1 point");
     public static readonly Point Two = new(2, nameof(Two), "2 points");
