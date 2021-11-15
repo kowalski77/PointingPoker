@@ -23,7 +23,7 @@ public class Point : GameEnumeration<Point>
         this.Display = display;
     }
 
-    public string Display { get; }
+    public string? Display { get; }
     
     public static Point? FindById(int id)
     {

@@ -13,7 +13,7 @@ public class GameEnumeration<T>
 
     public int Id { get; }
 
-    public string Name { get; }
+    public string? Name { get; }
 
     protected static IEnumerable<T> All => LazyEnumeration.Value;
 
