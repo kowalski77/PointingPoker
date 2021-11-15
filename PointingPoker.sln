@@ -10,9 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.Components", "PointingPoker.Components\PointingPoker.Components.csproj", "{9D335CC7-5B48-4ACC-892E-E9EB31287647}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.Razor", "PointingPoker.Razor\PointingPoker.Razor.csproj", "{9D335CC7-5B48-4ACC-892E-E9EB31287647}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointingPoker.API", "PointingPoker.API\PointingPoker.API.csproj", "{6ECA0F28-C92A-48BA-B8B1-4A0439329E1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.API", "PointingPoker.API\PointingPoker.API.csproj", "{6ECA0F28-C92A-48BA-B8B1-4A0439329E1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
