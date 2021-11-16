@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using PointingPoker.Common.Results;
 using PointingPoker.Models;
 
@@ -6,7 +7,9 @@ namespace PointingPoker.Razor.Services;
 
 public class SessionService : ISessionService
 {
+    private const string JsonMediaType = "application/json";
     private const string SessionApiRoute = "api/v1/sessions";
+
     private static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -19,9 +22,10 @@ public class SessionService : ISessionService
         this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async Task<Result<SessionDto>> CreateSessionAsync()
+    public async Task<Result<SessionDto>> CreateSessionAsync(CreateSessionModel sessionModel)
     {
-        var response = await this.httpClient.PostAsync(SessionApiRoute, null).ConfigureAwait(false);
+        using var sessionJson = new StringContent(JsonSerializer.Serialize(sessionModel), Encoding.UTF8, JsonMediaType);
+        var response = await this.httpClient.PostAsync(SessionApiRoute, sessionJson).ConfigureAwait(false);
 
         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         var session = JsonSerializer.Deserialize<SessionDto>(content, JsonSerializerOptions) ??

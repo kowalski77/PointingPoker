@@ -1,5 +1,6 @@
 ﻿using Blazorise;
 using Microsoft.AspNetCore.Components;
+using PointingPoker.Models;
 using PointingPoker.Razor.Services;
 
 namespace PointingPoker.Razor.Components;
@@ -12,9 +13,24 @@ public class CreateSessionBase : ComponentBase
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
+    protected string? PlayerName { get; set; }
+
+    protected bool IsModerator { get; set; }
+
+    protected int SessionNumber { get; set; }
+
+    protected Validations Validations { get; set; } = default!;
+
     protected async Task OnCreateSessionClickAsync()
     {
-        var response = await this.SessionService.CreateSessionAsync().ConfigureAwait(false);
+        var isValid = this.Validations.ValidateAll();
+        if (!isValid)
+        {
+            return;
+        }
+
+        var sessionModel = new CreateSessionModel(this.PlayerName!, this.IsModerator);
+        var response = await this.SessionService.CreateSessionAsync(sessionModel).ConfigureAwait(false);
         if (response.Failure)
         {
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
