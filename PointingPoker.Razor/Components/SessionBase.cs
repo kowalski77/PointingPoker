@@ -4,5 +4,5 @@ namespace PointingPoker.Razor.Components;
 
 public class SessionBase : ComponentBase
 {
-    [Parameter] public int Id { get; set; }
+    [Parameter] public Guid Id { get; set; }
 }

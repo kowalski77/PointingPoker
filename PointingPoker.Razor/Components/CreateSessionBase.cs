@@ -1,4 +1,5 @@
-﻿using Blazorise;
+﻿using Blazored.SessionStorage;
+using Blazorise;
 using Microsoft.AspNetCore.Components;
 using PointingPoker.Models;
 using PointingPoker.Razor.Services;
@@ -13,7 +14,9 @@ public class CreateSessionBase : ComponentBase
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
-    protected string? PlayerName { get; set; }
+    [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
+
+    protected string PlayerName { get; set; } = string.Empty;
 
     protected bool IsModerator { get; set; }
 
@@ -29,6 +32,8 @@ public class CreateSessionBase : ComponentBase
             return;
         }
 
+        await this.SessionStorage.SetItemAsync("Player", this.PlayerName).ConfigureAwait(false);
+
         var sessionModel = new CreateSessionModel(this.PlayerName!, this.IsModerator);
         var response = await this.SessionService.CreateSessionAsync(sessionModel).ConfigureAwait(false);
         if (response.Failure)
@@ -36,6 +41,6 @@ public class CreateSessionBase : ComponentBase
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
         }
 
-        this.NavigationManager.NavigateTo($"/session/{response.Value.SessionId}");
+        this.NavigationManager.NavigateTo($"/session/{response.Value}");
     }
 }

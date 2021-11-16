@@ -18,7 +18,9 @@ public class SessionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateSession([FromBody] CreateSessionModel model)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<SessionDto>> CreateSession([FromBody] CreateSessionModel model)
     {
         if (model is null)
         {
@@ -27,7 +29,7 @@ public class SessionsController : ControllerBase
 
         var session = new GameSession
         {
-            SessionId = this.randomNumGenerator.GetRandomNumber(100, 900),
+            SessionId = this.randomNumGenerator.GetRandomNumber(1, 999),
             Players = new List<Player>(new[]
             {
                 new Player { Name = model.playerName, IsObserver = model.IsObserver}
@@ -37,7 +39,7 @@ public class SessionsController : ControllerBase
         this.context.Sessions.Add(session);
         await this.context.SaveChangesAsync().ConfigureAwait(false);
 
-        return this.Ok(session);
+        return this.Ok(session.AsDto());
     }
 
     [HttpGet]

@@ -5,5 +5,5 @@ namespace PointingPoker.Razor.Services;
 
 public interface ISessionService
 {
-    Task<Result<SessionDto>> CreateSessionAsync(CreateSessionModel sessionModel);
+    Task<Result<Guid>> CreateSessionAsync(CreateSessionModel sessionModel);
 }

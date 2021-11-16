@@ -6,7 +6,7 @@ public class Player
     
     public string Name { get; init; } = default!;
     
-    public DateTime TimeJoined { get; set; }
+    public DateTime TimeJoined { get; set; } = DateTime.UtcNow;
     
     public Point? Points { get; set; }
     

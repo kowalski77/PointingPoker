@@ -22,7 +22,7 @@ public class SessionService : ISessionService
         this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async Task<Result<SessionDto>> CreateSessionAsync(CreateSessionModel sessionModel)
+    public async Task<Result<Guid>> CreateSessionAsync(CreateSessionModel sessionModel)
     {
         using var sessionJson = new StringContent(JsonSerializer.Serialize(sessionModel), Encoding.UTF8, JsonMediaType);
         var response = await this.httpClient.PostAsync(SessionApiRoute, sessionJson).ConfigureAwait(false);
@@ -32,7 +32,7 @@ public class SessionService : ISessionService
             throw new InvalidOperationException("Could not deserialize Session");
 
         return response.IsSuccessStatusCode ?
-            Result.Ok(session) :
-            Result.Fail<SessionDto>(response.StatusCode.ToString());
+            Result.Ok(session.Id) :
+            Result.Fail<Guid>(response.StatusCode.ToString());
     }
 }
