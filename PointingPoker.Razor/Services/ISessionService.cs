@@ -1,9 +1,9 @@
 ﻿using PointingPoker.Common.Results;
+using PointingPoker.Models;
 
-namespace PointingPoker.Razor.Services
+namespace PointingPoker.Razor.Services;
+
+public interface ISessionService
 {
-    public interface ISessionService
-    {
-        Task<Result<int>> CreateSessionAsync();
-    }
+    Task<Result<SessionDto>> CreateSessionAsync();
 }

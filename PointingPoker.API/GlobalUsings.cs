@@ -2,5 +2,4 @@
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using PointingPoker.API.Data;
-global using PointingPoker.API.Models;
 global using PointingPoker.API.Services;

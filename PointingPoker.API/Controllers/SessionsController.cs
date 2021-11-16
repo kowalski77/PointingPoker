@@ -1,4 +1,6 @@
-﻿namespace PointingPoker.API.Controllers;
+﻿using PointingPoker.Models;
+
+namespace PointingPoker.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -18,7 +20,7 @@ public class SessionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateSession()
     {
-        var session = new GameSession {SessionId = this.randomNumGenerator.GetRandomNumber(100, 900)};
+        var session = new GameSession { SessionId = this.randomNumGenerator.GetRandomNumber(100, 900) };
 
         this.context.Sessions.Add(session);
         await this.context.SaveChangesAsync().ConfigureAwait(false);
@@ -41,7 +43,7 @@ public class SessionsController : ControllerBase
     {
         var session = await this.context.Sessions
             .Include(x => x.Players)
-            .ThenInclude(x=>x.Points)
+            .ThenInclude(x => x.Points)
             .FirstOrDefaultAsync(x => x.Id == id)
             .ConfigureAwait(false);
 
@@ -51,9 +53,9 @@ public class SessionsController : ControllerBase
         }
 
         var sessionDto = new SessionWithPlayersDto(
-            session.Id, 
-            session.SessionId, 
-            session.Players.Select(x => (PlayerDto)x));
+            session.Id,
+            session.SessionId,
+            session.Players.Select(x =>x.AsDto()));
 
         return this.Ok(sessionDto);
     }
@@ -79,7 +81,7 @@ public class SessionsController : ControllerBase
             return this.BadRequest("Player with this name already exists");
         }
 
-        session.Players.Add(new Player {Name = name, TimeJoined = DateTime.UtcNow});
+        session.Players.Add(new Player { Name = name, TimeJoined = DateTime.UtcNow });
         await this.context.SaveChangesAsync().ConfigureAwait(false);
 
         return this.Ok();

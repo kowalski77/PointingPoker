@@ -22,7 +22,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{48
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{53498A89-76CF-485D-AE57-31B05FBFC553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointingPoker.Common", "PointingPoker.Common\PointingPoker.Common.csproj", "{476B8086-9967-4D92-BEC6-673082DE1488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.Common", "PointingPoker.Common\PointingPoker.Common.csproj", "{476B8086-9967-4D92-BEC6-673082DE1488}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointingPoker.Models", "PointingPoker.Models\PointingPoker.Models.csproj", "{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{476B8086-9967-4D92-BEC6-673082DE1488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{476B8086-9967-4D92-BEC6-673082DE1488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{476B8086-9967-4D92-BEC6-673082DE1488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{48B10681-0797-4B5C-B119-0B6D32D1B044} = {18AC4EF0-15DA-43F9-9254-A275789E884F}
 		{53498A89-76CF-485D-AE57-31B05FBFC553} = {18AC4EF0-15DA-43F9-9254-A275789E884F}
 		{476B8086-9967-4D92-BEC6-673082DE1488} = {47ECE8A4-C3B7-4880-A94D-B153318D9960}
+		{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A} = {47ECE8A4-C3B7-4880-A94D-B153318D9960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16EAE4EE-0074-4B04-AF5F-CEA29EC0FEBC}

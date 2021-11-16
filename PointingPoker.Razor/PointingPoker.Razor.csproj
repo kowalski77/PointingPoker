@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PointingPoker.Common\PointingPoker.Common.csproj" />
+    <ProjectReference Include="..\PointingPoker.Models\PointingPoker.Models.csproj" />
   </ItemGroup>
 
 </Project>

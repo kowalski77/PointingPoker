@@ -1,4 +1,6 @@
-﻿namespace PointingPoker.API.Controllers;
+﻿using PointingPoker.Models;
+
+namespace PointingPoker.API.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -18,7 +20,7 @@ public class PlayersController : ControllerBase
     {
         var players = await this.context.Players.ToListAsync().ConfigureAwait(false);
 
-        return this.Ok(players.Select(x => (PlayerDto)x).ToList());
+        return this.Ok(players.Select(x => x.AsDto()).ToList());
     }
 
     [HttpGet("{id:guid}")]
@@ -34,7 +36,7 @@ public class PlayersController : ControllerBase
             return this.NotFound();
         }
 
-        return this.Ok((PlayerDto)player);
+        return this.Ok(player.AsDto());
     }
     
     [HttpPost("{id:guid}/point")]

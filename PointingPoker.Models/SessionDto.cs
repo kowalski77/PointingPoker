@@ -1,4 +1,4 @@
-﻿namespace PointingPoker.API.Models;
+﻿namespace PointingPoker.Models;
 
 public record SessionDto(Guid Id, int SessionId);
 
