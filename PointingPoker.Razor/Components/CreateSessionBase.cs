@@ -8,7 +8,7 @@ namespace PointingPoker.Razor.Components;
 
 public class CreateSessionBase : ComponentBase
 {
-    [Inject] private ISessionService SessionService { get; set; } = default!;
+    [Inject] private IPokerSessionService PokerSessionService { get; set; } = default!;
 
     [Inject] private INotificationService NotificationService { get; set; } = default!;
 
@@ -35,12 +35,12 @@ public class CreateSessionBase : ComponentBase
         await this.SessionStorage.SetItemAsync("Player", this.PlayerName).ConfigureAwait(false);
 
         var sessionModel = new CreateSessionModel(this.PlayerName!, this.IsModerator);
-        var response = await this.SessionService.CreateSessionAsync(sessionModel).ConfigureAwait(false);
-        if (response.Failure)
+        var result = await this.PokerSessionService.CreateAsync(sessionModel).ConfigureAwait(false);
+        if (result.Failure)
         {
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
         }
 
-        this.NavigationManager.NavigateTo($"/session/{response.Value}");
+        this.NavigationManager.NavigateTo($"/session/{result.Value}");
     }
 }

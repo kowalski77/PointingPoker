@@ -5,7 +5,7 @@ using PointingPoker.Models;
 
 namespace PointingPoker.Razor.Services;
 
-public class SessionService : ISessionService
+public class PokerSessionService : IPokerSessionService
 {
     private const string JsonMediaType = "application/json";
     private const string SessionApiRoute = "api/v1/sessions";
@@ -17,12 +17,12 @@ public class SessionService : ISessionService
 
     private readonly HttpClient httpClient;
 
-    public SessionService(HttpClient httpClient)
+    public PokerSessionService(HttpClient httpClient)
     {
         this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async Task<Result<Guid>> CreateSessionAsync(CreateSessionModel sessionModel)
+    public async Task<Result<Guid>> CreateAsync(CreateSessionModel sessionModel)
     {
         using var sessionJson = new StringContent(JsonSerializer.Serialize(sessionModel), Encoding.UTF8, JsonMediaType);
         var response = await this.httpClient.PostAsync(SessionApiRoute, sessionJson).ConfigureAwait(false);
@@ -34,5 +34,18 @@ public class SessionService : ISessionService
         return response.IsSuccessStatusCode ?
             Result.Ok(session.Id) :
             Result.Fail<Guid>(response.StatusCode.ToString());
+    }
+
+    public async Task<Result<SessionWithPlayersDto>> GetSessionWithPlayersAsync(Guid sessionId)
+    {
+        var response = await this.httpClient.GetAsync($"{SessionApiRoute}/{sessionId}").ConfigureAwait(false);
+        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        var session = JsonSerializer.Deserialize<SessionWithPlayersDto>(content, JsonSerializerOptions) ??
+            throw new InvalidOperationException("Could not deserialize Session");
+
+        return response.IsSuccessStatusCode ?
+            Result.Ok(session) :
+            Result.Fail<SessionWithPlayersDto>(response.StatusCode.ToString());
     }
 }

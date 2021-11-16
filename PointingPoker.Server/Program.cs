@@ -18,7 +18,7 @@ builder.Services.AddBlazorise(options =>
     .AddBootstrapProviders()
     .AddFontAwesomeIcons();
 
-builder.Services.AddHttpClient<ISessionService, SessionService>(client => client.BaseAddress = new Uri("https://localhost:7047"));
+builder.Services.AddHttpClient<IPokerSessionService, PokerSessionService>(client => client.BaseAddress = new Uri("https://localhost:7047"));
 builder.Services.AddBlazoredSessionStorage();
 
 WebApplication? app = builder.Build();

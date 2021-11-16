@@ -53,6 +53,8 @@ public class SessionsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<SessionWithPlayersDto>> GetSession(Guid id)
     {
         var session = await this.context.Sessions
@@ -63,7 +65,7 @@ public class SessionsController : ControllerBase
 
         if (session is null)
         {
-            return this.NotFound();
+            return this.NotFound($"No session found with id: {id}");
         }
 
         var sessionDto = new SessionWithPlayersDto(
