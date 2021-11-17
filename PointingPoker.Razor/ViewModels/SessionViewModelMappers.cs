@@ -8,14 +8,14 @@ public static class SessionViewModelMappers
 
     private static PointsViewModelCollection pointsViewModelCollection => PointViewModelCollection.Value;
 
-    public static SessionViewModel AsViewModel(this SessionWithPlayersDto source)
+    public static SessionWithPlayersViewModel AsViewModel(this SessionWithPlayersDto source)
     {
         if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        return new SessionViewModel(
+        return new SessionWithPlayersViewModel(
             source.Id,
             source.SessionId,
             source.Players.Select(x => new PlayerViewModel(x.Id, x.Name, x.TimeJoined, x.Points, x.IsObserver)),

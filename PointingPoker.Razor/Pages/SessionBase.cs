@@ -16,7 +16,7 @@ public class SessionBase : ComponentBase
 
     [Parameter] public Guid Id { get; set; }
 
-    protected SessionViewModel? SessionViewModel { get; private set; }
+    protected SessionWithPlayersViewModel? SessionViewModel { get; private set; }
 
     protected PlayerViewModel? CurrentPlayer { get; private set; }
 

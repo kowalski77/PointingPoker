@@ -71,15 +71,15 @@ public class SessionsController : ControllerBase
         return this.Ok(sessionDto);
     }
 
-    [HttpPost("{id:guid}/addplayer")]
+    [HttpPost("{sessionId:int}/addplayer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddPlayerToSession(Guid id, [FromBody] string name)
+    public async Task<ActionResult<SessionDto>> AddPlayerToSession(int sessionId, [FromBody] string name)
     {
         var session = await this.context.Sessions
             .Include(x => x.Players)
-            .FirstOrDefaultAsync(x => x.Id == id)
+            .FirstOrDefaultAsync(x => x.SessionId == sessionId)
             .ConfigureAwait(false);
 
         if (session is null)
@@ -95,6 +95,6 @@ public class SessionsController : ControllerBase
         session.Players.Add(new Player { Name = name, TimeJoined = DateTime.UtcNow });
         await this.context.SaveChangesAsync().ConfigureAwait(false);
 
-        return this.Ok();
+        return this.Ok(session.AsDto());
     }
 }

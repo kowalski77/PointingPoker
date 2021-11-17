@@ -6,7 +6,9 @@ namespace PointingPoker.Razor.Services;
 
 public interface IPokerSessionService
 {
-    Task<Result<Guid>> CreateAsync(CreateSessionModel sessionModel);
+    Task<Result<Guid>> CreateAsync(CreateSessionModel model);
 
-    Task<Result<SessionViewModel>> GetSessionWithPlayersAsync(Guid sessionId);
+    Task<Result<Guid>> AddPlayerToSession(AddPlayerModel model);
+
+    Task<Result<SessionWithPlayersViewModel>> GetSessionWithPlayersAsync(Guid sessionId);
 }

@@ -1,5 +1,7 @@
 ﻿namespace PointingPoker.Models;
 
+public record AddPlayerModel(string Name);
+
 public record CreateSessionModel(string playerName, IEnumerable<int> PointsCollection);
 
 public record SessionDto(Guid Id, int SessionId);
