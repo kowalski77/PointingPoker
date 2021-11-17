@@ -16,7 +16,11 @@ public class SessionBase : ComponentBase
 
     [Parameter] public Guid Id { get; set; }
 
-    protected SessionViewModel? SessionViewModel{ get; set; }
+    protected SessionViewModel? SessionViewModel { get; private set; }
+
+    protected PlayerViewModel? CurrentPlayer { get; private set; }
+
+    protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -27,5 +31,15 @@ public class SessionBase : ComponentBase
         }
 
         this.SessionViewModel = result.Value;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            var storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(true);
+            this.CurrentPlayer = this.SessionViewModel?.Players.First(x => x.Name == storagePlayer);
+            this.StateHasChanged();
+        }
     }
 }
