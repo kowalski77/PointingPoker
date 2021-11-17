@@ -11,6 +11,6 @@ public static class PlayerMappers
             throw new ArgumentNullException(nameof(player));
         }
 
-        return new PlayerDto(player.Id, player.Name, player.TimeJoined, player.Points?.Id, player.IsObserver);
+        return new PlayerDto(player.Id, player.Name, player.TimeJoined, player.Point, player.IsObserver);
     }
 }

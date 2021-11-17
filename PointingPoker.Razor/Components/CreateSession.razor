@@ -26,33 +26,44 @@
         </Column>
     </Row>
     <Row>
-        @if (this.IsModerator)
-        {
-            <Column ColumnSize="ColumnSize.Is3">
+        <Column ColumnSize="ColumnSize.Is3">
+            @if (this.IsModerator)
+            {
                 <Button Color="Color.Primary" Block Clicked="()=> this.OnCreateSessionClickAsync()">Create</Button>
-            </Column>
-        }
-        else
-        {
-            <Column ColumnSize="ColumnSize.Is3">
+            }
+            else
+            {
                 <Addons>
                     <Addon AddonType="AddonType.Body">
-                        <NumericEdit Value="@this.SessionNumber" EnableStep="false"/>
+                        <NumericEdit Value="@this.SessionNumber" 
+                        Placeholder="Session number..." EnableStep="false" />
                     </Addon>
                     <Addon AddonType="AddonType.End">
                         <Button Color="Color.Primary">Join</Button>
                     </Addon>
                 </Addons>
-            </Column>
-        }
+            }
+        </Column>
     </Row>
 </Validations>
 <Row>
     <Column ColumnSize="ColumnSize.Is7">
-        <div style="margin-top: 25px;">
-            <Figure Size="FigureSize.Is256x256">
-                <FigureImage Source="_content/PointingPoker.Razor/img/poker.png" AlternateText="poker cards" />
-            </Figure>
-        </div>
+        @if (this.IsModerator)
+        {
+            <div style="margin-top: 25px;">
+                @foreach (var point in this.PointsCollection)
+                {
+                    <Check TValue="bool" @bind-Checked="@point.IsChecked">@point.Display</Check>
+                }
+            </div>
+        }
+        else
+        {
+            <div style="margin-top: 25px;">
+                <Figure Size="FigureSize.Is256x256">
+                    <FigureImage Source="_content/PointingPoker.Razor/img/poker.png" AlternateText="poker cards" />
+                </Figure>
+            </div>
+        }
     </Column>
 </Row>

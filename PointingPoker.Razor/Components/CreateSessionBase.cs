@@ -3,6 +3,7 @@ using Blazorise;
 using Microsoft.AspNetCore.Components;
 using PointingPoker.Models;
 using PointingPoker.Razor.Services;
+using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Components;
 
@@ -20,9 +21,11 @@ public class CreateSessionBase : ComponentBase
 
     protected bool IsModerator { get; set; }
 
-    protected int SessionNumber { get; set; }
+    protected int? SessionNumber { get; set; }
 
     protected Validations Validations { get; set; } = default!;
+
+    protected PointsViewModelCollection PointsCollection { get; } = new();
 
     protected async Task OnCreateSessionClickAsync()
     {
@@ -34,7 +37,9 @@ public class CreateSessionBase : ComponentBase
 
         await this.SessionStorage.SetItemAsync("Player", this.PlayerName).ConfigureAwait(false);
 
-        var sessionModel = new CreateSessionModel(this.PlayerName!, this.IsModerator);
+        var selectedPoints = this.PointsCollection.Where(x => x.IsChecked).Select(x => x.Value);
+        var sessionModel = new CreateSessionModel(this.PlayerName!, selectedPoints);
+
         var result = await this.PokerSessionService.CreateAsync(sessionModel).ConfigureAwait(false);
         if (result.Failure)
         {

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace PointingPoker.API.Data;
+﻿namespace PointingPoker.API.Data;
 
 public class PointingPokerContext : DbContext
 {
@@ -10,15 +8,13 @@ public class PointingPokerContext : DbContext
 
     public DbSet<GameSession> Sessions { get; set; } = default!;
 
-    public DbSet<Player> Players { get; set; } = default!;
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        if (modelBuilder == null)
+        if (modelBuilder is null)
         {
             throw new ArgumentNullException(nameof(modelBuilder));
         }
 
-        modelBuilder.Entity<Player>(x => x.OwnsOne(y => y.Points, y => y.Property(w => w.Id)));
+        modelBuilder.Entity<GameSession>(x => x.OwnsMany(y => y.PointVotes, y => y.Property(w => w.Id)));
     }
 }

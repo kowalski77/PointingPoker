@@ -8,7 +8,7 @@ public class GameSession
 
     public DateTime StartTime { get; set; }
 
-    public ICollection<int> PointVotes { get; } = new List<int>();
+    public ICollection<Point> PointVotes { get; init;} = new List<Point>();
 
     public ICollection<Player> Players { get; init; } = new List<Player>();
 

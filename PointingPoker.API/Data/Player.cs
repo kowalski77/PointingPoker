@@ -7,8 +7,8 @@ public class Player
     public string Name { get; init; } = default!;
     
     public DateTime TimeJoined { get; set; } = DateTime.UtcNow;
-    
-    public Point? Points { get; set; }
-    
+
+    public int? Point { get; set; }
+
     public bool IsObserver { get; set; }
 }

@@ -27,14 +27,8 @@ public class SessionsController : ControllerBase
             return this.BadRequest("Model is null");
         }
 
-        var session = new GameSession
-        {
-            SessionId = this.randomNumGenerator.GetRandomNumber(1, 999),
-            Players = new List<Player>(new[]
-            {
-                new Player { Name = model.playerName, IsObserver = model.IsObserver}
-            })
-        };
+        var session = model.AsEntity();
+        session.SessionId = this.randomNumGenerator.GetRandomNumber(1, 999);
 
         this.context.Sessions.Add(session);
         await this.context.SaveChangesAsync().ConfigureAwait(false);
@@ -59,7 +53,7 @@ public class SessionsController : ControllerBase
     {
         var session = await this.context.Sessions
             .Include(x => x.Players)
-            .ThenInclude(x => x.Points)
+            .Include(x => x.PointVotes)
             .FirstOrDefaultAsync(x => x.Id == id)
             .ConfigureAwait(false);
 
@@ -71,7 +65,8 @@ public class SessionsController : ControllerBase
         var sessionDto = new SessionWithPlayersDto(
             session.Id,
             session.SessionId,
-            session.Players.Select(x => x.AsDto()));
+            session.Players.Select(x => x.AsDto()),
+            session.PointVotes.Select(x => x.Id));
 
         return this.Ok(sessionDto);
     }
