@@ -1,0 +1,14 @@
+﻿@inherits PointsBase
+
+@if (this.Items is not null)
+{
+    foreach (var point in this.Items)
+    {
+        var uri = $"_content/PointingPoker.Razor/img/{point.Value}.png";
+
+        <Figure Size="FigureSize.Is128x128">
+            <FigureImage Source="@uri" AlternateText="@point.Display" />
+            <FigureCaption>@point.Display</FigureCaption>
+        </Figure>
+    }
+}

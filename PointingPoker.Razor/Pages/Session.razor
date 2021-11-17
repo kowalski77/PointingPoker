@@ -1,0 +1,15 @@
+﻿@page "/session/{id:guid}"
+
+<PageTitle>Session</PageTitle>
+
+@inherits SessionBase
+
+@if(this.SessionViewModel is null)
+{
+    <p>Loading session...</p>
+}
+else
+{
+    // Player
+    <Points Items="@this.SessionViewModel.PointsAvailale.ToList()"/>
+}

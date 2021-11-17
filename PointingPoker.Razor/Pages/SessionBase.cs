@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using PointingPoker.Razor.Services;
 using PointingPoker.Razor.ViewModels;
 
-namespace PointingPoker.Razor.Components;
+namespace PointingPoker.Razor.Pages;
 
 public class SessionBase : ComponentBase
 {
@@ -16,7 +16,7 @@ public class SessionBase : ComponentBase
 
     [Parameter] public Guid Id { get; set; }
 
-    private SessionViewModel? session;
+    protected SessionViewModel? SessionViewModel{ get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -26,6 +26,6 @@ public class SessionBase : ComponentBase
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
         }
 
-        this.session = result.Value;
+        this.SessionViewModel = result.Value;
     }
 }

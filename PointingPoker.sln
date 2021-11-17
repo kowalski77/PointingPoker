@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{53498A89-76CF-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.Common", "PointingPoker.Common\PointingPoker.Common.csproj", "{476B8086-9967-4D92-BEC6-673082DE1488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointingPoker.Models", "PointingPoker.Models\PointingPoker.Models.csproj", "{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointingPoker.Models", "PointingPoker.Models\PointingPoker.Models.csproj", "{D5AEDEB2-F890-4BCD-AB7E-02D4E017514A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
