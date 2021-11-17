@@ -4,7 +4,7 @@ using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Components;
 
-public class PointsBase : ComponentBase
+public class CardsBase : ComponentBase
 {
     [Parameter] public ICollection<PointsViewModel>? Items { get; init; } = new List<PointsViewModel>();
 

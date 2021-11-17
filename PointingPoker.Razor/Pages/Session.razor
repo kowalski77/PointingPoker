@@ -4,12 +4,23 @@
 
 @inherits SessionBase
 
-@if(this.SessionViewModel is null)
+@if (this.SessionViewModel is null)
 {
     <p>Loading session...</p>
 }
 else
 {
-    <Player Model="@this.CurrentPlayer"/>
-    <Points Items="@this.PointsViewModel"/>
+    @if (this.CurrentPlayer is not null && !this.CurrentPlayer.IsObserver)
+    {
+        <Player Model="@this.CurrentPlayer" />
+        <Cards Items="@this.PointsViewModel" />
+    }
+    else
+    {
+        <p>Players:</p>
+        @foreach (var player in this.SessionViewModel.Players)
+        {
+            <p>Player: @player.Name - Points: @player.Points</p>
+        }
+    }
 }
