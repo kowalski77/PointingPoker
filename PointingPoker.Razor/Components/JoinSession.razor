@@ -1,2 +1,33 @@
 ﻿@inherits JoinSessionBase
 
+<Validations @ref="Validations" Mode="ValidationMode.Manual">
+    <Row>
+        <Field>
+            <Validation Validator="@ValidationRule.IsNotEmpty">
+                <TextEdit Placeholder="Name" @bind-text="this.PlayerName">
+                    <Feedback>
+                        <ValidationError>Enter you name</ValidationError>
+                    </Feedback>
+                </TextEdit>
+            </Validation>
+        </Field>
+    </Row>
+</Validations>
+<Row>
+    <Addons>
+        <Addon AddonType="AddonType.Body">
+            <NumericEdit Value="@this.SessionNumber"
+                         Placeholder="Session number..." EnableStep="false" />
+        </Addon>
+        <Addon AddonType="AddonType.End">
+            <Button Color="Color.Primary">Join</Button>
+        </Addon>
+    </Addons>
+</Row>
+<Row>
+    <div style="margin-top: 25px;">
+        <Figure Size="FigureSize.Is256x256">
+            <FigureImage Source="_content/PointingPoker.Razor/img/poker.png" AlternateText="poker cards" />
+        </Figure>
+    </div>
+</Row>

@@ -1,5 +1,24 @@
 ﻿@page "/"
+@inherits IndexBase
 
 <PageTitle>Session</PageTitle>
 
-<CreateSession/>
+<h2>Hello, poker player!</h2>
+<br/>
+<Field>
+    <Check TValue="bool" @bind-Checked="@this.IsModerator">Join as Moderator</Check>
+</Field>
+<br/>
+<Column ColumnSize="ColumnSize.Is3">
+    <Row>
+        @if (this.IsModerator)
+        {
+            <CreateSession />
+        }
+        else
+        {
+            <JoinSession />
+        }
+    </Row>
+</Column>
+

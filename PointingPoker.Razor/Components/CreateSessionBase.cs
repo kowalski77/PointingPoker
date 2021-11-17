@@ -17,13 +17,9 @@ public class CreateSessionBase : ComponentBase
 
     [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
 
-    protected string PlayerName { get; set; } = string.Empty;
-
-    protected bool IsModerator { get; set; }
-
-    protected int? SessionNumber { get; set; }
-
     protected Validations Validations { get; set; } = default!;
+
+    protected string PlayerName { get; set; } = string.Empty;
 
     protected PointsViewModelCollection PointsCollection { get; } = new();
 
