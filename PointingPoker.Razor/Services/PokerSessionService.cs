@@ -2,6 +2,7 @@
 using System.Text.Json;
 using PointingPoker.Common.Results;
 using PointingPoker.Models;
+using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Services;
 
@@ -36,7 +37,7 @@ public class PokerSessionService : IPokerSessionService
             Result.Fail<Guid>(response.StatusCode.ToString());
     }
 
-    public async Task<Result<SessionWithPlayersDto>> GetSessionWithPlayersAsync(Guid sessionId)
+    public async Task<Result<SessionViewModel>> GetSessionWithPlayersAsync(Guid sessionId)
     {
         var response = await this.httpClient.GetAsync($"{SessionApiRoute}/{sessionId}").ConfigureAwait(false);
         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -45,7 +46,7 @@ public class PokerSessionService : IPokerSessionService
             throw new InvalidOperationException("Could not deserialize Session");
 
         return response.IsSuccessStatusCode ?
-            Result.Ok(session) :
-            Result.Fail<SessionWithPlayersDto>(response.StatusCode.ToString());
+            Result.Ok(session.AsViewModel()) :
+            Result.Fail<SessionViewModel>(response.StatusCode.ToString());
     }
 }

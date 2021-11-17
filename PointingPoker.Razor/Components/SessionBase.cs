@@ -1,8 +1,8 @@
 ﻿using Blazored.SessionStorage;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
-using PointingPoker.Models;
 using PointingPoker.Razor.Services;
+using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Components;
 
@@ -16,7 +16,7 @@ public class SessionBase : ComponentBase
 
     [Parameter] public Guid Id { get; set; }
 
-    private SessionWithPlayersDto? session;
+    private SessionViewModel? session;
 
     protected override async Task OnParametersSetAsync()
     {
