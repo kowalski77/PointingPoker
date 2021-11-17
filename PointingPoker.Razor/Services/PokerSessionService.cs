@@ -55,15 +55,15 @@ public class PokerSessionService : IPokerSessionService
             Result.Fail<SessionWithPlayersViewModel>(response.StatusCode.ToString());
     }
 
-    public async Task<Result<Guid>> AddPlayerToSession(AddPlayerModel model)
+    public async Task<Result<Guid>> AddPlayerToSessionAsync(AddPlayerModel model)
     {
         if (model is null)
         {
             throw new ArgumentNullException(nameof(model));
         }
 
-        using var mocelContent = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, JsonMediaType);
-        var response = await this.httpClient.PostAsync(SessionApiRoute, mocelContent).ConfigureAwait(false);
+        using var modelContent = new StringContent(JsonSerializer.Serialize(model.Name), Encoding.UTF8, JsonMediaType);
+        var response = await this.httpClient.PostAsync($"{SessionApiRoute}/{model.SessionId}/addplayer", modelContent).ConfigureAwait(false);
 
         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         var session = JsonSerializer.Deserialize<SessionDto>(content, JsonSerializerOptions) ??

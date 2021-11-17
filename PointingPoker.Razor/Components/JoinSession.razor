@@ -9,17 +9,17 @@
         </Field>
     </Row>
     <Row>
-        <Validation Validator="@ValidationRule.IsNotEmpty">
+        @*<Validation Validator="@ValidationRule.IsNotEmpty">*@
             <Addons>
                 <Addon AddonType="AddonType.Body">
-                    <NumericEdit Value="@this.SessionNumber"
+                    <NumericEdit @bind-Value="@this.SessionNumber"
                                  Placeholder="Session number..." EnableStep="false"/>
                 </Addon>
                 <Addon AddonType="AddonType.End">
                     <Button Color="Color.Primary" Clicked="()=> this.OnJoinClickedAsync()">Join</Button>
                 </Addon>
             </Addons>
-        </Validation>
+        @*</Validation>*@
     </Row>
     <Row>
         <div style="margin-top: 25px;">

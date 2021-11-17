@@ -8,7 +8,7 @@ public interface IPokerSessionService
 {
     Task<Result<Guid>> CreateAsync(CreateSessionModel model);
 
-    Task<Result<Guid>> AddPlayerToSession(AddPlayerModel model);
+    Task<Result<Guid>> AddPlayerToSessionAsync(AddPlayerModel model);
 
-    Task<Result<SessionWithPlayersViewModel>> GetSessionWithPlayersAsync(Guid sessionId);
+    Task<Result<SessionWithPlayersViewModel>> GetSessionWithPlayersAsync(Guid id);
 }
