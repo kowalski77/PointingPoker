@@ -4,11 +4,7 @@
     <Row>
         <Field>
             <Validation Validator="@ValidationRule.IsNotEmpty">
-                <TextEdit Placeholder="Name" @bind-text="this.PlayerName">
-                    <Feedback>
-                        <ValidationError>Enter you name</ValidationError>
-                    </Feedback>
-                </TextEdit>
+                <TextEdit Placeholder="Name" @bind-text="this.PlayerName"/>
             </Validation>
         </Field>
     </Row>

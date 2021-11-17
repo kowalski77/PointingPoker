@@ -17,6 +17,7 @@ else
     }
     else
     {
+        <h3>Session nº @this.SessionViewModel.SessionId</h3>
         @foreach (var player in this.SessionViewModel.Players)
         {
             <p>Player: @player.Name - Points: @player.Points</p>

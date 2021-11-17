@@ -4,30 +4,28 @@
     <Row>
         <Field>
             <Validation Validator="@ValidationRule.IsNotEmpty">
-                <TextEdit Placeholder="Name" @bind-text="this.PlayerName">
-                    <Feedback>
-                        <ValidationError>Enter you name</ValidationError>
-                    </Feedback>
-                </TextEdit>
+                <TextEdit Placeholder="Name" @bind-text="this.PlayerName"/>
             </Validation>
         </Field>
     </Row>
+    <Row>
+        <Validation Validator="@ValidationRule.IsNotEmpty">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <NumericEdit Value="@this.SessionNumber"
+                                 Placeholder="Session number..." EnableStep="false"/>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <Button Color="Color.Primary" Clicked="()=> this.OnJoinClickedAsync()">Join</Button>
+                </Addon>
+            </Addons>
+        </Validation>
+    </Row>
+    <Row>
+        <div style="margin-top: 25px;">
+            <Figure Size="FigureSize.Is256x256">
+                <FigureImage Source="_content/PointingPoker.Razor/img/poker.png" AlternateText="poker cards" />
+            </Figure>
+        </div>
+    </Row>
 </Validations>
-<Row>
-    <Addons>
-        <Addon AddonType="AddonType.Body">
-            <NumericEdit Value="@this.SessionNumber"
-                         Placeholder="Session number..." EnableStep="false" />
-        </Addon>
-        <Addon AddonType="AddonType.End">
-            <Button Color="Color.Primary">Join</Button>
-        </Addon>
-    </Addons>
-</Row>
-<Row>
-    <div style="margin-top: 25px;">
-        <Figure Size="FigureSize.Is256x256">
-            <FigureImage Source="_content/PointingPoker.Razor/img/poker.png" AlternateText="poker cards" />
-        </Figure>
-    </div>
-</Row>
