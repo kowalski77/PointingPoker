@@ -2,6 +2,7 @@
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using PointingPoker.Razor.Hubs;
 using PointingPoker.Razor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,5 +38,6 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+app.MapHub<GameHub>(GameHub.HubUrl);
 
 app.Run();
