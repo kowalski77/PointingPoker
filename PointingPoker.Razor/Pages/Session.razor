@@ -10,7 +10,7 @@
 }
 else
 {
-    @if (!this.IsObserver)
+    @if (!this.IsModerator)
     {
         <Player Model="@this.CurrentPlayer" />
         <Cards Items="@this.PointsViewModel" />
@@ -18,7 +18,10 @@ else
     }
     else
     {
+        // TODO: create Moderator component
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
+        <h4>Hi, @this.CurrentPlayer?.Name. You are the moderator.</h4>
+        <br/>
         @foreach (var player in this.SessionViewModel.Players.Where(x=> !x.IsObserver))
         {
             <p>Player: @player.Name - Points: @player.Points</p>

@@ -10,6 +10,7 @@ namespace PointingPoker.Razor.Pages;
 
 public class SessionBase : ComponentBase
 {
+    private string storagePlayer = string.Empty;
     private HubConnection? hubConnection;
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
@@ -28,7 +29,18 @@ public class SessionBase : ComponentBase
 
     protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
-    public bool IsObserver => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
+    public bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var hubUrl = this.NavigationManager.BaseUri.TrimEnd('/') + GameHub.HubUrl;
+        this.hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl)
+            .Build();
+
+        this.hubConnection.On<string, string>("Broadcast", this.BroadcastMessage);
+        await this.hubConnection.StartAsync().ConfigureAwait(false);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -40,19 +52,15 @@ public class SessionBase : ComponentBase
         }
 
         this.SessionViewModel = result.Value;
-        var storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(true);
-        this.CurrentPlayer = this.SessionViewModel?.Players.First(x => x.Name == storagePlayer);
+        this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == storagePlayer);
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var hubUrl = this.NavigationManager.BaseUri.TrimEnd('/') + GameHub.HubUrl;
-        this.hubConnection = new HubConnectionBuilder()
-            .WithUrl(hubUrl)
-            .Build();
-
-        this.hubConnection.On<string, string>("Broadcast", this.BroadcastMessage);
-        await this.hubConnection.StartAsync().ConfigureAwait(false);
+        if (firstRender)
+        {
+            this.storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(false);
+        }
     }
 
     protected async Task NotifyAsync()
