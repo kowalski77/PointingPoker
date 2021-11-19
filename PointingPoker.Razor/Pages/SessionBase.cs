@@ -50,7 +50,7 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        var hubUrl = this.NavigationManager.BaseUri.TrimEnd('/') + GameHub.HubUrl;
+        var hubUrl = $"{this.NavigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
         this.hubConnection = new HubConnectionBuilder()
             .WithUrl(hubUrl)
             .Build();
