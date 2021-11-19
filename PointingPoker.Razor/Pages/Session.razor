@@ -4,7 +4,7 @@
 
 @inherits SessionBase
 
-@if (this.SessionViewModel is null)
+@if (this.SessionViewModel is null || !this.IsConnected)
 {
     <p>Loading session...</p>
 }

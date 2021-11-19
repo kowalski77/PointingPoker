@@ -31,6 +31,8 @@ public class SessionBase : ComponentBase
 
     public bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
 
+    protected bool IsConnected { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         var hubUrl = this.NavigationManager.BaseUri.TrimEnd('/') + GameHub.HubUrl;
@@ -53,6 +55,10 @@ public class SessionBase : ComponentBase
 
         this.SessionViewModel = result.Value;
         this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == storagePlayer);
+        if (this.CurrentPlayer is not null)
+        {
+            await this.NotifyAsync().ConfigureAwait(false);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -60,12 +66,13 @@ public class SessionBase : ComponentBase
         if (firstRender)
         {
             this.storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(false);
+            this.IsConnected = true;
         }
     }
 
     protected async Task NotifyAsync()
     {
-        await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer?.Name, "Hello you").ConfigureAwait(false);
+        await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer?.Name, string.Empty).ConfigureAwait(false);
     }
 
     private void BroadcastMessage(string name, string message)
@@ -77,6 +84,6 @@ public class SessionBase : ComponentBase
         }
 
         // Inform blazor the UI needs updating
-        this.StateHasChanged();
+        //this.StateHasChanged();
     }
 }
