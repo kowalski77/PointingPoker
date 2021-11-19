@@ -8,11 +8,12 @@ using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Pages;
 
-public class SessionBase : ComponentBase
+public class SessionBase : ComponentBase, IAsyncDisposable
 {
     private List<PlayerViewModel> activePlayers = new();
-    private string storagePlayer = string.Empty;
     private HubConnection? hubConnection;
+    private string storagePlayer = string.Empty;
+    private IDisposable? subscription;
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
@@ -30,11 +31,22 @@ public class SessionBase : ComponentBase
 
     protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
-    protected ICollection<PlayerViewModel> ActivePlayers => activePlayers;
+    protected IEnumerable<PlayerViewModel> ActivePlayers => this.activePlayers;
 
-    public bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
+    protected bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
 
-    protected bool IsConnected { get; set; }
+    protected bool IsConnected { get; private set; }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (this.hubConnection is not null)
+        {
+            await this.hubConnection.DisposeAsync().ConfigureAwait(false);
+        }
+
+        this.subscription?.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,7 +55,7 @@ public class SessionBase : ComponentBase
             .WithUrl(hubUrl)
             .Build();
 
-        this.hubConnection.On<string, string>("Broadcast", this.ReceiveNewPlayer);
+        this.subscription = this.hubConnection.On<string, string>("Broadcast", this.ReceiveNewPlayer);
         await this.hubConnection.StartAsync().ConfigureAwait(false);
     }
 
@@ -58,7 +70,7 @@ public class SessionBase : ComponentBase
 
         this.SessionViewModel = result.Value;
         this.activePlayers = this.SessionViewModel?.Players.ToList() ?? new List<PlayerViewModel>();
-        this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == storagePlayer);
+        this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == this.storagePlayer);
 
         if (this.CurrentPlayer is not null)
         {
@@ -75,7 +87,7 @@ public class SessionBase : ComponentBase
         }
     }
 
-    protected async Task NotifyNewPlayerAsync()
+    private async Task NotifyNewPlayerAsync()
     {
         await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer?.Name, string.Empty).ConfigureAwait(false);
     }
