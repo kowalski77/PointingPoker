@@ -43,7 +43,7 @@ public class SessionBase : ComponentBase
             .WithUrl(hubUrl)
             .Build();
 
-        this.hubConnection.On<string, string>("Broadcast", this.BroadcastMessage);
+        this.hubConnection.On<string, string>("Broadcast", this.ReceiveNewPlayer);
         await this.hubConnection.StartAsync().ConfigureAwait(false);
     }
 
@@ -62,7 +62,7 @@ public class SessionBase : ComponentBase
 
         if (this.CurrentPlayer is not null)
         {
-            await this.NotifyAsync().ConfigureAwait(false);
+            await this.NotifyNewPlayerAsync().ConfigureAwait(false);
         }
     }
 
@@ -75,12 +75,12 @@ public class SessionBase : ComponentBase
         }
     }
 
-    protected async Task NotifyAsync()
+    protected async Task NotifyNewPlayerAsync()
     {
         await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer?.Name, string.Empty).ConfigureAwait(false);
     }
 
-    private void BroadcastMessage(string name, string message)
+    private void ReceiveNewPlayer(string name, string message)
     {
         var isMine = name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
         if (isMine)
