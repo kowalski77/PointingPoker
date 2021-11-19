@@ -29,6 +29,9 @@ public class SessionBase : ComponentBase
 
     protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
+    protected ICollection<PlayerViewModel> ActivePlayers => this.SessionViewModel?.Players.ToList() ??
+        new List<PlayerViewModel>();
+
     public bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
 
     protected bool IsConnected { get; set; }
@@ -83,6 +86,10 @@ public class SessionBase : ComponentBase
             return;
         }
 
+        if(this.ActivePlayers is not null)
+        {
+            this.ActivePlayers.Add(new PlayerViewModel(Guid.NewGuid(), name, DateTime.UtcNow, null, false));
+        }
         // Inform blazor the UI needs updating
         //this.StateHasChanged();
     }

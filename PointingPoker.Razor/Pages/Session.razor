@@ -15,7 +15,7 @@ else
         <Player Model="@this.CurrentPlayer" />
         <Cards Items="@this.PointsViewModel" />
         <br />
-        <Score Items="@this.SessionViewModel.Players" />
+        <Score Items="@this.ActivePlayers" />
     }
     else
     {
@@ -23,6 +23,6 @@ else
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
         <h4>Hi, @this.CurrentPlayer?.Name. You are the moderator.</h4>
         <br />
-        <Score Items="@this.SessionViewModel.Players" />
+        <Score Items="@this.ActivePlayers" />
     }
 }
