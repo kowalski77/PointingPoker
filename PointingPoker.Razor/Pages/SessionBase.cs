@@ -10,6 +10,7 @@ namespace PointingPoker.Razor.Pages;
 
 public class SessionBase : ComponentBase
 {
+    private List<PlayerViewModel> activePlayers = new();
     private string storagePlayer = string.Empty;
     private HubConnection? hubConnection;
 
@@ -29,8 +30,7 @@ public class SessionBase : ComponentBase
 
     protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
-    protected ICollection<PlayerViewModel> ActivePlayers => this.SessionViewModel?.Players.ToList() ??
-        new List<PlayerViewModel>();
+    protected ICollection<PlayerViewModel> ActivePlayers => activePlayers;
 
     public bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
 
@@ -57,7 +57,9 @@ public class SessionBase : ComponentBase
         }
 
         this.SessionViewModel = result.Value;
+        this.activePlayers = this.SessionViewModel?.Players.ToList() ?? new List<PlayerViewModel>();
         this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == storagePlayer);
+
         if (this.CurrentPlayer is not null)
         {
             await this.NotifyAsync().ConfigureAwait(false);
@@ -86,11 +88,7 @@ public class SessionBase : ComponentBase
             return;
         }
 
-        if(this.ActivePlayers is not null)
-        {
-            this.ActivePlayers.Add(new PlayerViewModel(Guid.NewGuid(), name, DateTime.UtcNow, null, false));
-        }
-        // Inform blazor the UI needs updating
-        //this.StateHasChanged();
+        this.activePlayers.Add(new PlayerViewModel(Guid.NewGuid(), name, DateTime.UtcNow, null, false));
+        this.StateHasChanged();
     }
 }
