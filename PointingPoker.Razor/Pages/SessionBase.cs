@@ -28,25 +28,20 @@ public class SessionBase : ComponentBase
 
     protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
+    public bool IsObserver => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
+
     protected override async Task OnParametersSetAsync()
     {
-        var result = await this.PokerSessionService.GetSessionWithPlayersAsync(this.Id).ConfigureAwait(false);
+        var result = await this.PokerSessionService.GetSessionWithPlayersAsync(this.Id).ConfigureAwait(true);
         if (result.Failure)
         {
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
+            return;
         }
 
         this.SessionViewModel = result.Value;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender)
-        {
-            var storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(true);
-            this.CurrentPlayer = this.SessionViewModel?.Players.First(x => x.Name == storagePlayer);
-            this.StateHasChanged();
-        }
+        var storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(true);
+        this.CurrentPlayer = this.SessionViewModel?.Players.First(x => x.Name == storagePlayer);
     }
 
     protected override async Task OnInitializedAsync()

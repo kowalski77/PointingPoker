@@ -10,7 +10,7 @@
 }
 else
 {
-    @if (this.CurrentPlayer is not null && !this.CurrentPlayer.IsObserver)
+    @if (!this.IsObserver)
     {
         <Player Model="@this.CurrentPlayer" />
         <Cards Items="@this.PointsViewModel" />
@@ -19,7 +19,7 @@ else
     else
     {
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
-        @foreach (var player in this.SessionViewModel.Players)
+        @foreach (var player in this.SessionViewModel.Players.Where(x=> !x.IsObserver))
         {
             <p>Player: @player.Name - Points: @player.Points</p>
         }
