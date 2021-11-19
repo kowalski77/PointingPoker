@@ -14,18 +14,15 @@ else
     {
         <Player Model="@this.CurrentPlayer" />
         <Cards Items="@this.PointsViewModel" />
-        <Button Clicked="@this.NotifyAsync">Click me</Button>
+        <br />
+        <Score Items="@this.SessionViewModel.Players" />
     }
     else
     {
         // TODO: create Moderator component
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
         <h4>Hi, @this.CurrentPlayer?.Name. You are the moderator.</h4>
-        <br/>
-        @foreach (var player in this.SessionViewModel.Players.Where(x=> !x.IsObserver))
-        {
-            <p>Player: @player.Name - Points: @player.Points</p>
-        }
-        <Button Clicked="@this.NotifyAsync">Click me 2</Button>
+        <br />
+        <Score Items="@this.SessionViewModel.Players" />
     }
 }

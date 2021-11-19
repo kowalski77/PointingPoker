@@ -1,0 +1,17 @@
+﻿@using PointingPoker.Razor.ViewModels
+
+@if(this.Items is null)
+{
+    <p>Loading Players...</p>
+}
+else
+{
+    @foreach (var player in Items.Where(x => !x.IsObserver))
+    {
+        <p>Player: @player.Name - Points: @player.Points</p>
+    }   
+}
+
+@code {
+    [Parameter] public IEnumerable<PlayerViewModel>? Items { get; set; }
+}
