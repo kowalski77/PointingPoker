@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Hubs;
 
@@ -6,9 +7,9 @@ public class GameHub : Hub
 {
     public const string HubUrl = "/game";
 
-    public async Task Broadcast(string username, string message)
+    public async Task Broadcast(PlayerViewModel player)
     {
-        await Clients.All.SendAsync("Broadcast", username, message).ConfigureAwait(false);
+        await Clients.All.SendAsync("Broadcast", player).ConfigureAwait(false);
     }
 
     public override Task OnConnectedAsync()

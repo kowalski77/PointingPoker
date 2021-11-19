@@ -55,7 +55,7 @@ public class SessionBase : ComponentBase, IAsyncDisposable
             .WithUrl(hubUrl)
             .Build();
 
-        this.subscription = this.hubConnection.On<string, string>("Broadcast", this.ReceiveNewPlayer);
+        this.subscription = this.hubConnection.On<PlayerViewModel>("Broadcast", this.ReceiveNewPlayer);
         await this.hubConnection.StartAsync().ConfigureAwait(false);
     }
 
@@ -89,18 +89,18 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
     private async Task NotifyNewPlayerAsync()
     {
-        await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer?.Name, string.Empty).ConfigureAwait(false);
+        await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer).ConfigureAwait(false);
     }
 
-    private void ReceiveNewPlayer(string name, string message)
+    private void ReceiveNewPlayer(PlayerViewModel player)
     {
-        var isMine = name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
+        var isMine = player.Name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
         if (isMine)
         {
             return;
         }
 
-        this.activePlayers.Add(new PlayerViewModel(Guid.NewGuid(), name, DateTime.UtcNow, null, false));
+        this.activePlayers.Add(player);
         this.StateHasChanged();
     }
 }
