@@ -1,7 +1,6 @@
 ﻿using Blazored.SessionStorage;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 using PointingPoker.Razor.Hubs;
 using PointingPoker.Razor.Services;
 using PointingPoker.Razor.ViewModels;
@@ -11,9 +10,8 @@ namespace PointingPoker.Razor.Pages;
 public class SessionBase : ComponentBase, IAsyncDisposable
 {
     private List<PlayerViewModel> activePlayers = new();
-    private HubConnection? hubConnection;
+    private GameConnectionHub? connectionMethods;
     private string storagePlayer = string.Empty;
-    private IDisposable? subscription;
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
@@ -39,24 +37,22 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (this.hubConnection is not null)
+        if(this.connectionMethods is not null)
         {
-            await this.hubConnection.DisposeAsync().ConfigureAwait(false);
+            await this.connectionMethods.DisposeAsync().ConfigureAwait(false);
         }
 
-        this.subscription?.Dispose();
         GC.SuppressFinalize(this);
     }
 
     protected override async Task OnInitializedAsync()
     {
         var hubUrl = $"{this.NavigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
-        this.hubConnection = new HubConnectionBuilder()
-            .WithUrl(hubUrl)
-            .Build();
 
-        this.subscription = this.hubConnection.On<PlayerViewModel>("Broadcast", this.ReceiveNewPlayer);
-        await this.hubConnection.StartAsync().ConfigureAwait(false);
+        this.connectionMethods = new GameConnectionHub(new Uri(hubUrl));
+        this.connectionMethods.OnPlayerReceived(this.ReceiveNewPlayer);
+
+        await this.connectionMethods.StartAsync().ConfigureAwait(false);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -74,7 +70,7 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
         if (this.CurrentPlayer is not null)
         {
-            await this.NotifyNewPlayerAsync().ConfigureAwait(false);
+            await this.connectionMethods!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
         }
     }
 
@@ -85,11 +81,6 @@ public class SessionBase : ComponentBase, IAsyncDisposable
             this.storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(false);
             this.IsConnected = true;
         }
-    }
-
-    private async Task NotifyNewPlayerAsync()
-    {
-        await this.hubConnection!.SendAsync("Broadcast", this.CurrentPlayer).ConfigureAwait(false);
     }
 
     private void ReceiveNewPlayer(PlayerViewModel player)

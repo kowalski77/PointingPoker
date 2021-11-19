@@ -3,24 +3,12 @@ using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Hubs;
 
-public class GameHub : Hub
+public class GameHub : Hub<IGameClient>, IGameHub
 {
     public const string HubUrl = "/game";
 
-    public async Task Broadcast(PlayerViewModel player)
+    public async Task NotifyNewPlayer(PlayerViewModel player)
     {
-        await Clients.All.SendAsync("Broadcast", player).ConfigureAwait(false);
-    }
-
-    public override Task OnConnectedAsync()
-    {
-        Console.WriteLine($"{Context.ConnectionId} connected");
-        return base.OnConnectedAsync();
-    }
-
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        Console.WriteLine($"Disconnected {exception?.Message} {Context.ConnectionId}");
-        await base.OnDisconnectedAsync(exception).ConfigureAwait(false);
+        await Clients.All.OnNewPlayer(player).ConfigureAwait(false);
     }
 }
