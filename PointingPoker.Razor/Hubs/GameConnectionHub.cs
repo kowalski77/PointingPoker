@@ -6,7 +6,7 @@ namespace PointingPoker.Razor.Hubs;
 
 public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnectionHub
 {
-    private IDisposable? subscription;
+    private readonly List<IDisposable> subscriptionCollection = new();
     private readonly HubConnection hubConnection;
 
     public GameConnectionHub(NavigationManager navigationManager)
@@ -32,15 +32,29 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
         await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewPlayer), player).ConfigureAwait(false);
     }
 
+    public async Task NotifyNewVote(PlayerVoteViewModel point)
+    {
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewVote), point).ConfigureAwait(false);
+    }
+
     public void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived)
     {
-        this.subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
+        var subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
+        this.subscriptionCollection.Add(subscription);
+    }
+    
+    public void OnVoteReceived(Action<PlayerVoteViewModel> onVoteReceived)
+    {
+        var subscription = this.hubConnection.On(nameof(IGameClient.OnNewVote), onVoteReceived);
+        this.subscriptionCollection.Add(subscription);
     }
 
     public async ValueTask DisposeAsync()
     {
         await this.hubConnection.DisposeAsync().ConfigureAwait(false);
-        this.subscription?.Dispose();
-        this.subscription = null;
+        foreach (var subscription in this.subscriptionCollection)
+        {
+            subscription.Dispose();
+        }
     }
 }

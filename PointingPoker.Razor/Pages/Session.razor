@@ -12,17 +12,16 @@ else
 {
     @if (!this.IsModerator)
     {
-        <Player Model="@this.CurrentPlayer" />
-        <Cards Items="@this.PointsViewModel" />
-        <br />
-        <Score Items="@this.ActivePlayers" />
+        <Player Model="@this.CurrentPlayer" Points="@this.PointsViewModel"/>
     }
     else
     {
         // TODO: create Moderator component
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
         <h4>Hi, @this.CurrentPlayer?.Name. You are the moderator.</h4>
-        <br />
-        <Score Items="@this.ActivePlayers" />
     }
+
+    <br/>
+    <br/>
+    <Score Items="@this.ActivePlayers"/>
 }

@@ -6,11 +6,15 @@ namespace PointingPoker.Razor.Components;
 
 public class CardsBase : ComponentBase
 {
-    [Parameter] public ICollection<PointsViewModel>? Items { get; init; } = new List<PointsViewModel>();
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<PointsViewModel>? Items { get; init; } = new List<PointsViewModel>();
 
-    protected string? Vote { get; set; }
+    [Parameter] [EditorRequired] public EventCallback<int> OnVote { get; set; }
 
-    protected void OnFigureClick(int point)
+    protected string? Vote { get; private set; }
+
+    protected async Task OnFigureClick(int point)
     {
         this.Vote = point switch
         {
@@ -18,5 +22,7 @@ public class CardsBase : ComponentBase
             9999 => "0",
             _ => point.ToString(CultureInfo.InvariantCulture)
         };
+
+        await this.OnVote.InvokeAsync(point).ConfigureAwait(false);
     }
 }

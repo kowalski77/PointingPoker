@@ -26,7 +26,7 @@ public class SessionBase : ComponentBase
 
     protected PlayerViewModel? CurrentPlayer { get; private set; }
 
-    protected ICollection<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
+    protected IEnumerable<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
 
     protected IEnumerable<PlayerViewModel> ActivePlayers => this.activePlayers;
 
@@ -37,7 +37,8 @@ public class SessionBase : ComponentBase
     protected override async Task OnInitializedAsync()
     {
         this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
-        await this.GameConnectionHub.StartAsync().ConfigureAwait(false) ;
+        this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
+        await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -70,13 +71,23 @@ public class SessionBase : ComponentBase
 
     private void ReceiveNewPlayer(PlayerViewModel player)
     {
-        var isMine = player.Name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
-        if (isMine)
+        var isCurrentPlayer = player.Name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
+        if (isCurrentPlayer)
         {
             return;
         }
 
         this.activePlayers.Add(player);
+        this.StateHasChanged();
+    }
+
+    private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
+    {
+        var player = this.activePlayers.First(x => x.Id == pointsViewModel.PlayerId);
+        var newPlayer = player with {Points = pointsViewModel.Points};
+        
+        this.activePlayers.Remove(player);
+        this.activePlayers.Add(newPlayer);
         this.StateHasChanged();
     }
 }
