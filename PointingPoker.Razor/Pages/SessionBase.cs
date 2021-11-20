@@ -10,7 +10,7 @@ namespace PointingPoker.Razor.Pages;
 public class SessionBase : ComponentBase, IAsyncDisposable
 {
     private List<PlayerViewModel> activePlayers = new();
-    private GameConnectionHub? connectionMethods;
+    private GameConnectionHub? gameConnection;
     private string storagePlayer = string.Empty;
 
     [Inject] private NavigationManager NavigationManager { get; set; } = default!;
@@ -37,9 +37,9 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if(this.connectionMethods is not null)
+        if(this.gameConnection is not null)
         {
-            await this.connectionMethods.DisposeAsync().ConfigureAwait(false);
+            await this.gameConnection.DisposeAsync().ConfigureAwait(false);
         }
 
         GC.SuppressFinalize(this);
@@ -49,10 +49,10 @@ public class SessionBase : ComponentBase, IAsyncDisposable
     {
         var hubUrl = $"{this.NavigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
 
-        this.connectionMethods = new GameConnectionHub(new Uri(hubUrl));
-        this.connectionMethods.OnPlayerReceived(this.ReceiveNewPlayer);
+        this.gameConnection = new GameConnectionHub(new Uri(hubUrl));
+        this.gameConnection.OnPlayerReceived(this.ReceiveNewPlayer);
 
-        await this.connectionMethods.StartAsync().ConfigureAwait(false);
+        await this.gameConnection.StartAsync().ConfigureAwait(false);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -70,7 +70,7 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
         if (this.CurrentPlayer is not null)
         {
-            await this.connectionMethods!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
+            await this.gameConnection!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
         }
     }
 
