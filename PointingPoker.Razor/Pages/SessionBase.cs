@@ -84,8 +84,8 @@ public class SessionBase : ComponentBase
     private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
     {
         var player = this.activePlayers.First(x => x.Id == pointsViewModel.PlayerId);
-        var newPlayer = player with {Points = pointsViewModel.Points};
-        
+        var newPlayer = player with { Points = pointsViewModel.Points };
+
         this.activePlayers.Remove(player);
         this.activePlayers.Add(newPlayer);
         this.StateHasChanged();
