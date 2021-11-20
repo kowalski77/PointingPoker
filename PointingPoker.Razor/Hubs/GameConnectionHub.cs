@@ -9,11 +9,16 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
     private IDisposable? subscription;
     private readonly HubConnection hubConnection;
 
-    public GameConnectionHub()
+    public GameConnectionHub(NavigationManager navigationManager)
     {
-        //var hubUrl = $"{navigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
+        if (navigationManager is null)
+        {
+            throw new ArgumentNullException(nameof(navigationManager));
+        }
+
+        var hubUrl = $"{navigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
         this.hubConnection = new HubConnectionBuilder()
-            .WithUrl($"http://localhost{GameHub.HubUrl}")
+            .WithUrl(hubUrl)
             .Build();
     }
 

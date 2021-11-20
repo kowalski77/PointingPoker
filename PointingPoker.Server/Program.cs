@@ -42,8 +42,4 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapHub<GameHub>(GameHub.HubUrl);
 
-using var scope = app.Services.CreateScope();
-var gameConnectionHub = scope.ServiceProvider.GetRequiredService<IGameConnectionHub>();
-await gameConnectionHub.StartAsync().ConfigureAwait(false);
-
 await app.RunAsync().ConfigureAwait(false);

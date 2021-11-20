@@ -34,9 +34,10 @@ public class SessionBase : ComponentBase
 
     protected bool IsConnected { get; private set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
+        await this.GameConnectionHub.StartAsync().ConfigureAwait(false) ;
     }
 
     protected override async Task OnParametersSetAsync()
