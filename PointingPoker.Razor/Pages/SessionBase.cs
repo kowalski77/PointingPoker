@@ -7,19 +7,18 @@ using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Pages;
 
-public class SessionBase : ComponentBase, IAsyncDisposable
+public class SessionBase : ComponentBase
 {
     private List<PlayerViewModel> activePlayers = new();
-    private GameConnectionHub? gameConnection;
     private string storagePlayer = string.Empty;
-
-    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
     [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
 
     [Inject] private INotificationService NotificationService { get; set; } = default!;
 
     [Inject] private IPokerSessionService PokerSessionService { get; set; } = default!;
+
+    [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
 
     [Parameter] public Guid Id { get; set; }
 
@@ -35,24 +34,9 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
     protected bool IsConnected { get; private set; }
 
-    public async ValueTask DisposeAsync()
+    protected override void OnInitialized()
     {
-        if(this.gameConnection is not null)
-        {
-            await this.gameConnection.DisposeAsync().ConfigureAwait(false);
-        }
-
-        GC.SuppressFinalize(this);
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var hubUrl = $"{this.NavigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
-
-        this.gameConnection = new GameConnectionHub(new Uri(hubUrl));
-        this.gameConnection.OnPlayerReceived(this.ReceiveNewPlayer);
-
-        await this.gameConnection.StartAsync().ConfigureAwait(false);
+        this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -70,7 +54,7 @@ public class SessionBase : ComponentBase, IAsyncDisposable
 
         if (this.CurrentPlayer is not null)
         {
-            await this.gameConnection!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
+            await this.GameConnectionHub!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
         }
     }
 

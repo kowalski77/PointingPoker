@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Hubs;
 
-public sealed class GameConnectionHub : IGameHub, IAsyncDisposable
+public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnectionHub
 {
     private IDisposable? subscription;
     private readonly HubConnection hubConnection;
 
-    public GameConnectionHub(Uri hubUrl)
+    public GameConnectionHub()
     {
+        //var hubUrl = $"{navigationManager.BaseUri.TrimEnd('/')}{GameHub.HubUrl}";
         this.hubConnection = new HubConnectionBuilder()
-          .WithUrl(hubUrl)
-          .Build();
+            .WithUrl($"http://localhost{GameHub.HubUrl}")
+            .Build();
     }
 
     public async Task StartAsync()
@@ -27,13 +29,13 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable
 
     public void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived)
     {
-        this.subscription =  this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
+        this.subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
     }
 
     public async ValueTask DisposeAsync()
     {
         await this.hubConnection.DisposeAsync().ConfigureAwait(false);
-        this.subscription?.Dispose();   
+        this.subscription?.Dispose();
         this.subscription = null;
     }
 }

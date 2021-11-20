@@ -22,6 +22,8 @@ builder.Services.AddBlazorise(options =>
 builder.Services.AddHttpClient<IPokerSessionService, PokerSessionService>(client => client.BaseAddress = new Uri("https://localhost:7047"));
 builder.Services.AddBlazoredSessionStorage();
 
+builder.Services.AddScoped<IGameConnectionHub, GameConnectionHub>();   
+
 WebApplication? app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -40,4 +42,8 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.MapHub<GameHub>(GameHub.HubUrl);
 
-app.Run();
+using var scope = app.Services.CreateScope();
+var gameConnectionHub = scope.ServiceProvider.GetRequiredService<IGameConnectionHub>();
+await gameConnectionHub.StartAsync().ConfigureAwait(false);
+
+await app.RunAsync().ConfigureAwait(false);
