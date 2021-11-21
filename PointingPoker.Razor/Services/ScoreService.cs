@@ -1,21 +1,18 @@
-﻿using PointingPoker.Razor.ViewModels;
-
-namespace PointingPoker.Razor.Services;
+﻿namespace PointingPoker.Razor.Services;
 
 public class ScoreService
 {
-    //TODO: fix warning
-    public event EventHandler<PlayerViewModel> ? PlayerChanged;
+    public event EventHandler<ScoreEventArgs>? ScoreAdded;
 
-    public event EventHandler<PlayerVoteViewModel>? PlayerVoteChanged;
-    
-    public void AddPlayer(PlayerViewModel player)
+    public event EventHandler<ScoreEventArgs>? ScoreUpdated;
+
+    public void Add(ScoreEventArgs score)
     {
-        this.PlayerChanged?.Invoke(this, player);
+        this.ScoreAdded?.Invoke(this, score);
     }
 
-    public void ChangeVote(PlayerVoteViewModel playerVote)
+    public void Update(ScoreEventArgs score)
     {
-        this.PlayerVoteChanged?.Invoke(this, playerVote);
+        this.ScoreUpdated?.Invoke(this, score);
     }
 }

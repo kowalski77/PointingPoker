@@ -18,7 +18,7 @@ public class SessionBase : ComponentBase
     [Inject] private IPokerSessionService PokerSessionService { get; set; } = default!;
 
     [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
-    
+
     [Inject] private ScoreService ScoreService { get; set; } = default!;
 
     [Parameter] public Guid Id { get; set; }
@@ -73,12 +73,20 @@ public class SessionBase : ComponentBase
         if (isCurrentPlayer)
         {
             return;
-        } 
-        this.ScoreService.AddPlayer(player);
+        }
+
+        var scoreEventArgs = new ScoreEventArgs
+        {
+            PlayerId = player.Id, PlayerName = player.Name, Points = player.Points
+        };
+
+        this.ScoreService.Add(scoreEventArgs);
     }
 
     private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
     {
-        this.ScoreService.ChangeVote(pointsViewModel);
+        var scoreEventArgs = new ScoreEventArgs {PlayerId = pointsViewModel.PlayerId, Points = pointsViewModel.Points};
+
+        this.ScoreService.Update(scoreEventArgs);
     }
 }
