@@ -24,7 +24,10 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
 
     public async Task StartAsync()
     {
-        await this.hubConnection.StartAsync().ConfigureAwait(false);
+        if(this.hubConnection.State == HubConnectionState.Disconnected)
+        {
+            await this.hubConnection.StartAsync().ConfigureAwait(false);
+        }
     }
 
     public async Task NotifyNewPlayer(PlayerViewModel player)

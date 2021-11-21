@@ -21,6 +21,7 @@ builder.Services.AddBlazorise(options =>
 
 builder.Services.AddHttpClient<IPokerSessionService, PokerSessionService>(client => client.BaseAddress = new Uri("https://localhost:7047"));
 builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddScoped<ScoreService>();
 
 builder.Services.AddScoped<IGameConnectionHub, GameConnectionHub>();   
 

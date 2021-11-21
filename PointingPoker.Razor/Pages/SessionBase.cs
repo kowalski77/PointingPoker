@@ -9,7 +9,6 @@ namespace PointingPoker.Razor.Pages;
 
 public class SessionBase : ComponentBase
 {
-    private List<PlayerViewModel> activePlayers = new();
     private string storagePlayer = string.Empty;
 
     [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
@@ -19,6 +18,8 @@ public class SessionBase : ComponentBase
     [Inject] private IPokerSessionService PokerSessionService { get; set; } = default!;
 
     [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
+    
+    [Inject] private ScoreService ScoreService { get; set; } = default!;
 
     [Parameter] public Guid Id { get; set; }
 
@@ -27,8 +28,6 @@ public class SessionBase : ComponentBase
     protected PlayerViewModel? CurrentPlayer { get; private set; }
 
     protected IEnumerable<PointsViewModel>? PointsViewModel => this.SessionViewModel?.PointsAvailable.ToList();
-
-    protected IEnumerable<PlayerViewModel> ActivePlayers => this.activePlayers;
 
     protected bool IsModerator => this.CurrentPlayer is not null && this.CurrentPlayer.IsObserver;
 
@@ -51,7 +50,6 @@ public class SessionBase : ComponentBase
         }
 
         this.SessionViewModel = result.Value;
-        this.activePlayers = this.SessionViewModel?.Players.ToList() ?? new List<PlayerViewModel>();
         this.CurrentPlayer = this.SessionViewModel?.Players.FirstOrDefault(x => x.Name == this.storagePlayer);
 
         if (this.CurrentPlayer is not null)
@@ -75,19 +73,12 @@ public class SessionBase : ComponentBase
         if (isCurrentPlayer)
         {
             return;
-        }
-
-        this.activePlayers.Add(player);
-        this.StateHasChanged();
+        } 
+        this.ScoreService.AddPlayer(player);
     }
 
     private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
     {
-        var player = this.activePlayers.First(x => x.Id == pointsViewModel.PlayerId);
-        var newPlayer = player with { Points = pointsViewModel.Points };
-
-        this.activePlayers.Remove(player);
-        this.activePlayers.Add(newPlayer);
-        this.StateHasChanged();
+        this.ScoreService.ChangeVote(pointsViewModel);
     }
 }

@@ -1,17 +1,49 @@
-﻿@using PointingPoker.Razor.ViewModels
+﻿@using PointingPoker.Razor.Services
+@using PointingPoker.Razor.ViewModels
+@implements IDisposable
 
-@if(this.Items is null)
+@inject ScoreService scoreService
+
+@foreach (var player in playerVoteViewModels.Where(x => !x.IsObserver))
 {
-    <p>Loading Players...</p>
-}
-else
-{
-    @foreach (var player in Items.Where(x => !x.IsObserver))
-    {
-        <p>Player: @player.Name - Points: @player.Points</p>
-    }   
+    <p>Player: @player.Name - Points: @player.Points</p>
 }
 
 @code {
-    [Parameter] public IEnumerable<PlayerViewModel>? Items { get; set; }
+
+    private List<PlayerViewModel> playerVoteViewModels { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        scoreService.PlayerChanged += OnPlayerChanged;
+        scoreService.PlayerVoteChanged += OnPlayerVoteChanged;
+    }
+
+    private void OnPlayerChanged(object? sender, PlayerViewModel e)
+    {
+        this.playerVoteViewModels.Add(e);
+
+        this.StateHasChanged();
+    }
+
+    private void OnPlayerVoteChanged(object? sender, PlayerVoteViewModel e)
+    {
+        var player = this.playerVoteViewModels.FirstOrDefault(x => x.Id == e.PlayerId);
+        if (player is null)
+        {
+            return;
+        }
+
+        var newPlayer = player with { Points = e.Points };
+        this.playerVoteViewModels.Remove(player);
+        this.playerVoteViewModels.Add(newPlayer);
+
+        this.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        scoreService.PlayerChanged -= OnPlayerChanged;
+        scoreService.PlayerVoteChanged -= OnPlayerVoteChanged;
+    }
 }
