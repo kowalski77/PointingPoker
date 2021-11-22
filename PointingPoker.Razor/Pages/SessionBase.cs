@@ -19,8 +19,6 @@ public class SessionBase : ComponentBase
 
     [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
 
-    [Inject] private ScoreService ScoreService { get; set; } = default!;
-
     [Parameter] public Guid Id { get; set; }
 
     protected SessionWithPlayersViewModel? SessionViewModel { get; private set; }
@@ -35,8 +33,6 @@ public class SessionBase : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
-        this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
     }
 
@@ -54,7 +50,7 @@ public class SessionBase : ComponentBase
 
         if (this.CurrentPlayer is not null)
         {
-            await this.GameConnectionHub!.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
+            await this.GameConnectionHub.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
         }
     }
 
@@ -65,28 +61,5 @@ public class SessionBase : ComponentBase
             this.storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(false);
             this.IsConnected = true;
         }
-    }
-
-    private void ReceiveNewPlayer(PlayerViewModel player)
-    {
-        var isCurrentPlayer = player.Name.Equals(this.CurrentPlayer?.Name, StringComparison.OrdinalIgnoreCase);
-        if (isCurrentPlayer)
-        {
-            return;
-        }
-
-        var scoreEventArgs = new ScoreEventArgs
-        {
-            PlayerId = player.Id, PlayerName = player.Name, Points = player.Points
-        };
-
-        this.ScoreService.Add(scoreEventArgs);
-    }
-
-    private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
-    {
-        var scoreEventArgs = new ScoreEventArgs {PlayerId = pointsViewModel.PlayerId, Points = pointsViewModel.Points};
-
-        this.ScoreService.Update(scoreEventArgs);
     }
 }

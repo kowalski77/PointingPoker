@@ -1,60 +1,58 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
+using PointingPoker.Razor.Hubs;
 using PointingPoker.Razor.Services;
 using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Components;
 
-public class ScoreBase : ComponentBase, IDisposable
+public class ScoreBase : ComponentBase
 {
     protected ICollection<ScoreViewModel> ScoreViewModels { get; } = new List<ScoreViewModel>();
 
-    [Inject] private ScoreService ScoreService { get; set; } = default!;
+    [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
+    
+    
+    [Inject] private IScoreCache ScoreCache { get; set; } = default!;   
 
-    public void Dispose()
+    protected override async Task OnInitializedAsync()
     {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
+        this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
+        this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
+        await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
     }
     
-    protected override void OnInitialized()
+    private void ReceiveNewPlayer(PlayerViewModel player)
     {
-        this.ScoreService.ScoreAdded += this.OnScoreAdded;
-        this.ScoreService.ScoreUpdated += this.OnScoreUpdated;
-    }
+        var sessionId = player.SessionId.ToString(CultureInfo.InvariantCulture);
 
-    private void OnScoreAdded(object? sender, ScoreEventArgs e)
-    {
-        var scoreViewModel = new ScoreViewModel
-        {
-            PlayerId = e.PlayerId, PlayerName = e.PlayerName, Points = e.Points.ToString() ?? string.Empty
-        };
-
-        this.ScoreViewModels.Add(scoreViewModel);
-
-        this.StateHasChanged();
-    }
-
-    private void OnScoreUpdated(object? sender, ScoreEventArgs e)
-    {
-        var player = this.ScoreViewModels.FirstOrDefault(x => x.PlayerId == e.PlayerId);
-        if (player is null)
+        var cachedScores = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
+        if(cachedScores.Any(x=>x.PlayerId == player.Id))
         {
             return;
         }
 
-        player.Points = e.Points.ToString() ?? string.Empty;
+        cachedScores.Add((ScoreViewModel)player);
 
-        this.StateHasChanged();
+        foreach (var cachedScore in cachedScores)
+        {
+            this.ScoreViewModels.Add(cachedScore);
+            this.StateHasChanged();
+        }
+
+        this.ScoreCache.Update(sessionId, cachedScores);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void ReceiveVote(PlayerVoteViewModel pointsViewModel)
     {
-        if (!disposing)
+        var score = this.ScoreViewModels.FirstOrDefault(x => x.PlayerId == pointsViewModel.PlayerId);
+        if(score is null)
         {
             return;
         }
 
-        this.ScoreService.ScoreAdded -= this.OnScoreAdded;
-        this.ScoreService.ScoreUpdated -= this.OnScoreUpdated;
+        score.UpdatePoints(pointsViewModel.Points);
+        
+        this.StateHasChanged();
     }
 }
