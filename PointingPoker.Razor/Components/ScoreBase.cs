@@ -22,13 +22,21 @@ public class ScoreBase : ComponentBase
         this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
 
-        if(this.PlayerViewModel is not null)
+        InitializeScore();
+    }
+
+    private void InitializeScore()
+    {
+        if (this.PlayerViewModel is null)
         {
-            var sessionId = PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
-            var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
-            this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
-            this.StateHasChanged();
+            return;
         }
+
+        var sessionId = PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
+        var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
+        this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
+
+        this.StateHasChanged();
     }
 
     private void ReceiveNewPlayer(PlayerViewModel player)
