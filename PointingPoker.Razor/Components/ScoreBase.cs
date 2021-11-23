@@ -12,7 +12,6 @@ public class ScoreBase : ComponentBase
 
     [Inject] private IGameConnectionHub GameConnectionHub { get; set; } = default!;
     
-    
     [Inject] private IScoreCache ScoreCache { get; set; } = default!;   
 
     protected override async Task OnInitializedAsync()
@@ -51,7 +50,7 @@ public class ScoreBase : ComponentBase
             return;
         }
 
-        score.UpdatePoints(pointsViewModel.Points);
+        score.Points = pointsViewModel.Points.ToString(CultureInfo.InvariantCulture);
         
         this.StateHasChanged();
     }

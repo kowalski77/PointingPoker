@@ -5,11 +5,20 @@ namespace PointingPoker.Razor.ViewModels;
 [SuppressMessage("Usage", "CA2225", MessageId = "Operator overloads have named alternates")]
 public class ScoreViewModel
 {
+    private string points = string.Empty;
+
     public Guid PlayerId { get; init; }
 
     public string PlayerName { get; private init; } = string.Empty;
 
-    public string Points { get; private set; } = string.Empty;
+    public string Points
+    {
+        get => this.points;
+        set
+        {
+            this.points = GetValue(value);
+        }
+    }
 
     public static explicit operator ScoreViewModel(PlayerViewModel playerViewModel)
     {
@@ -22,22 +31,18 @@ public class ScoreViewModel
         {
             PlayerId = playerViewModel.Id,
             PlayerName = playerViewModel.Name,
-            Points = GetValue(playerViewModel.Points)
+            Points = playerViewModel.Points.ToString() ?? string.Empty
         };
     }
-    
-    public void UpdatePoints(int points)
-    {
-        Points = GetValue(points);
-    }
+
 
     // TODO: review this, this logic is in more places in the application
-    private static string GetValue(int? original)
+    private static string GetValue(string original)
     {
         var value = original switch
         {
-            999 => "?",
-            9999 => "0",
+            "999" => "?",
+            "9999" => "0",
             _ => original.ToString() ?? string.Empty
         };
 
