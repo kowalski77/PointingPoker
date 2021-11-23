@@ -14,11 +14,21 @@ public class ScoreBase : ComponentBase
 
     [Inject] private IScoreCache ScoreCache { get; set; } = default!;
 
+    [CascadingParameter] PlayerViewModel? PlayerViewModel { get; set; }  
+
     protected override async Task OnInitializedAsync()
     {
         this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
         this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
+
+        if(this.PlayerViewModel is not null)
+        {
+            var sessionId = PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
+            var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
+            this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
+            this.StateHasChanged();
+        }
     }
 
     private void ReceiveNewPlayer(PlayerViewModel player)

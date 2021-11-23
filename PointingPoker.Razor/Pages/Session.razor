@@ -10,11 +10,13 @@
 }
 else
 {
-     <Score/>
+    <CascadingValue Value="@CurrentPlayer">
+        <Score />
+    </CascadingValue>
 
     @if (!this.IsModerator)
     {
-        <Player Model="@this.CurrentPlayer" Points="@this.PointsViewModel"/>
+        <Player Model="@this.CurrentPlayer" Points="@this.PointsViewModel" />
     }
     else
     {

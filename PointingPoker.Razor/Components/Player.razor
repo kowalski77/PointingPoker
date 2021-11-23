@@ -1,7 +1,7 @@
 ﻿@using PointingPoker.Razor.ViewModels
 @inherits PlayerBase
 
-<p>Player: @this.Model?.Name</p>
+<p>Hello: @this.Model?.Name !</p>
 <p>Joined at : @this.Model?.TimeJoined.ToShortTimeString()</p>
 
 <Cards Items="@this.Points"  OnVote="@this.NotifyVote"/>
