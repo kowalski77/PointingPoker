@@ -25,11 +25,12 @@ public class ScoreBase : ComponentBase
     {
         var sessionId = player.SessionId.ToString(CultureInfo.InvariantCulture);
 
-        var newlyScore = (ScoreViewModel)player;
-
         var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
-        cachedScoreViewModels.Add(newlyScore);
-        this.ScoreCache.Update(sessionId, cachedScoreViewModels);
+        if(!cachedScoreViewModels.Any(x=>x.PlayerId == player.Id))
+        {
+            cachedScoreViewModels.Add((ScoreViewModel)player);
+            this.ScoreCache.Update(sessionId, cachedScoreViewModels);
+        }
 
         this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
         this.StateHasChanged();
