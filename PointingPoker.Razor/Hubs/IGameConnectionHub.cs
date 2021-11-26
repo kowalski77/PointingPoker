@@ -2,19 +2,15 @@
 
 namespace PointingPoker.Razor.Hubs;
 
-public interface IGameConnectionHub
+public interface IGameConnectionHub : IGameHub
 {
-    Task NotifyNewPlayer(string sessionGroup, PlayerViewModel player);
-    
-    Task NotifyNewVote(string sessionGroup, PlayerVoteViewModel point);
-
-    Task NotifyNewUserStory(string sessionGroup, UserStoryViewModel userStory);
-
     void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived);
     
     void OnVoteReceived(Action<PlayerVoteViewModel> onVoteReceived);
 
     void OnUserStoryReceived(Action<UserStoryViewModel> onUserStoryReceived);
+    
+    void OnVoteVisibilityChanged(Action<bool> onVoteVisibilityChanged);
 
     Task StartAsync();
 }

@@ -4,5 +4,7 @@
 
 @foreach (var player in ScoreViewModels)
 {
-    <p>Player: @player.PlayerName - Points: @player.Points</p>
+    <div>
+        Player: @player.PlayerName - <p class="@this.VoteClass">Points: @player.Points</p>
+    </div>
 }

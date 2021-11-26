@@ -16,3 +16,12 @@
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
 }
+
+.vote-show{
+    opacity: 1;
+    transition: opacity 0.5s linear;
+}
+
+.vote-hide{
+    opacity: 0;
+}

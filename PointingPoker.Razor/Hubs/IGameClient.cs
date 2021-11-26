@@ -9,4 +9,6 @@ public interface IGameClient
     Task OnNewVote(PlayerVoteViewModel point);
     
     Task OnNewUserStory(UserStoryViewModel userStory);
+
+    Task OnChangeVoteVisibility(bool isVisible);
 }

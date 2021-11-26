@@ -24,4 +24,10 @@ public class GameHub : Hub<IGameClient>, IGameHub
         await Groups.AddToGroupAsync(Context.ConnectionId, sessionGroup).ConfigureAwait(false);
         await this.Clients.Group(sessionGroup).OnNewUserStory(userStory).ConfigureAwait(false);
     }
+
+    public async Task NotifyVoteVisibility(string sessionGroup, bool isVisible)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionGroup).ConfigureAwait(false);
+        await this.Clients.Group(sessionGroup).OnChangeVoteVisibility(isVisible).ConfigureAwait(false);
+    }
 }

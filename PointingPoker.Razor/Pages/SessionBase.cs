@@ -12,6 +12,8 @@ public class SessionBase : ComponentBase
 {
     private string storagePlayer = string.Empty;
 
+    private bool votesAreVisible;
+
     [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
 
     [Inject] private INotificationService NotificationService { get; set; } = default!;
@@ -81,5 +83,11 @@ public class SessionBase : ComponentBase
         await this.GameConnectionHub
             .NotifyNewUserStory(this.SessionId, new UserStoryViewModel(this.UserStory))
             .ConfigureAwait(false);
+    }
+    
+    protected async Task OnChangeVotesVisibility()
+    {
+        await this.GameConnectionHub.NotifyVoteVisibility(this.SessionId, this.votesAreVisible).ConfigureAwait(false);
+        this.votesAreVisible = !this.votesAreVisible;
     }
 }

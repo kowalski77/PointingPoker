@@ -9,4 +9,6 @@ public interface IGameHub
     Task NotifyNewVote(string sessionGroup, PlayerVoteViewModel point);
     
     Task NotifyNewUserStory(string sessionGroup, UserStoryViewModel userStory);
+    
+    Task NotifyVoteVisibility(string sessionGroup, bool isVisible);
 }

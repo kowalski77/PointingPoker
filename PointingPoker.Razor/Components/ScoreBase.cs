@@ -16,10 +16,13 @@ public class ScoreBase : ComponentBase
 
     [CascadingParameter] private PlayerViewModel? PlayerViewModel { get; set; }
 
+    protected string VoteClass { get; private set; } = "vote-hide";
+
     protected override async Task OnInitializedAsync()
     {
         this.GameConnectionHub.OnPlayerReceived(this.ReceiveNewPlayer);
         this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
+        this.GameConnectionHub.OnVoteVisibilityChanged(this.ChangeVoteVisibility);
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
 
         this.InitializeScore();
@@ -33,7 +36,7 @@ public class ScoreBase : ComponentBase
         }
 
         var sessionId = this.PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
-        var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
+        var cachedScoreViewModels = this.ScoreCache.All(sessionId)?.ToList() ?? new List<ScoreViewModel>();
         this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
 
         this.StateHasChanged();
@@ -43,7 +46,7 @@ public class ScoreBase : ComponentBase
     {
         var sessionId = player.SessionId.ToString(CultureInfo.InvariantCulture);
 
-        var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
+        var cachedScoreViewModels = this.ScoreCache.All(sessionId)?.ToList() ?? new List<ScoreViewModel>();
         if (cachedScoreViewModels.All(x => x.PlayerId != player.Id))
         {
             cachedScoreViewModels.Add((ScoreViewModel)player);
@@ -64,6 +67,12 @@ public class ScoreBase : ComponentBase
 
         score.Points = pointsViewModel.Points.ToString(CultureInfo.InvariantCulture);
 
+        this.StateHasChanged();
+    }
+    
+    private void ChangeVoteVisibility(bool isVisible)
+    {
+        this.VoteClass = isVisible ? "vote-show" : "vote-hide";
         this.StateHasChanged();
     }
 }

@@ -56,6 +56,12 @@ public sealed class GameConnectionHub : IAsyncDisposable, IGameConnectionHub
             .ConfigureAwait(false);
     }
 
+    public async Task NotifyVoteVisibility(string sessionGroup, bool isVisible)
+    {
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyVoteVisibility), sessionGroup, isVisible)
+            .ConfigureAwait(false);
+    }
+
     public void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
@@ -71,6 +77,12 @@ public sealed class GameConnectionHub : IAsyncDisposable, IGameConnectionHub
     public void OnUserStoryReceived(Action<UserStoryViewModel> onUserStoryReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewUserStory), onUserStoryReceived);
+        this.subscriptionCollection.Add(subscription);
+    }
+    
+    public void OnVoteVisibilityChanged(Action<bool> onVoteVisibilityChanged)
+    {
+        var subscription = this.hubConnection.On(nameof(IGameClient.OnChangeVoteVisibility), onVoteVisibilityChanged);
         this.subscriptionCollection.Add(subscription);
     }
 }
