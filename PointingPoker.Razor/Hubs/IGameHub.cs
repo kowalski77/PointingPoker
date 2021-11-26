@@ -4,9 +4,9 @@ namespace PointingPoker.Razor.Hubs;
 
 public interface IGameHub
 {
-    Task NotifyNewPlayer(PlayerViewModel player);
+    Task NotifyNewPlayer(string sessionGroup, PlayerViewModel player);
 
-    Task NotifyNewVote(PlayerVoteViewModel point);
+    Task NotifyNewVote(string sessionGroup, PlayerVoteViewModel point);
     
-    Task NotifyNewUserStory(UserStoryViewModel userStory);
+    Task NotifyNewUserStory(string sessionGroup, UserStoryViewModel userStory);
 }

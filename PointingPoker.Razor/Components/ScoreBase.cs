@@ -41,11 +41,6 @@ public class ScoreBase : ComponentBase
 
     private void ReceiveNewPlayer(PlayerViewModel player)
     {
-        if (this.PlayerViewModel?.SessionId != player.SessionId)
-        {
-            return;
-        }
-
         var sessionId = player.SessionId.ToString(CultureInfo.InvariantCulture);
 
         var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();

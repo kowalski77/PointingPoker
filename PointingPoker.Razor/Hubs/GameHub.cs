@@ -7,18 +7,21 @@ public class GameHub : Hub<IGameClient>, IGameHub
 {
     public const string HubUrl = "/game";
 
-    public async Task NotifyNewPlayer(PlayerViewModel player)
+    public async Task NotifyNewPlayer(string sessionGroup, PlayerViewModel player)
     {
-        await Clients.All.OnNewPlayer(player).ConfigureAwait(false);
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionGroup).ConfigureAwait(false);
+        await this.Clients.Group(sessionGroup).OnNewPlayer(player).ConfigureAwait(false);
     }
 
-    public async Task NotifyNewVote(PlayerVoteViewModel point)
+    public async Task NotifyNewVote(string sessionGroup, PlayerVoteViewModel point)
     {
-        await Clients.All.OnNewVote(point).ConfigureAwait(false);
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionGroup).ConfigureAwait(false);
+        await this.Clients.Group(sessionGroup).OnNewVote(point).ConfigureAwait(false);
     }
 
-    public async Task NotifyNewUserStory(UserStoryViewModel userStory)
+    public async Task NotifyNewUserStory(string sessionGroup, UserStoryViewModel userStory)
     {
-        await Clients.All.OnNewUserStory(userStory).ConfigureAwait(false);
+        await Groups.AddToGroupAsync(Context.ConnectionId, sessionGroup).ConfigureAwait(false);
+        await this.Clients.Group(sessionGroup).OnNewUserStory(userStory).ConfigureAwait(false);
     }
 }

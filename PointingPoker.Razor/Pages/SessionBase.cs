@@ -1,4 +1,5 @@
-﻿using Blazored.SessionStorage;
+﻿using System.Globalization;
+using Blazored.SessionStorage;
 using Blazorise;
 using Microsoft.AspNetCore.Components;
 using PointingPoker.Razor.Hubs;
@@ -33,6 +34,8 @@ public class SessionBase : ComponentBase
 
     protected string UserStory { get; set; } = string.Empty;
 
+    private string SessionId => this.SessionViewModel!.SessionId.ToString(CultureInfo.InvariantCulture);
+
     protected override async Task OnInitializedAsync()
     {
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
@@ -52,7 +55,9 @@ public class SessionBase : ComponentBase
 
         if (this.CurrentPlayer is not null)
         {
-            await this.GameConnectionHub.NotifyNewPlayer(this.CurrentPlayer!).ConfigureAwait(false);
+            await this.GameConnectionHub
+                .NotifyNewPlayer(this.SessionId, this.CurrentPlayer!)
+                .ConfigureAwait(false);
         }
     }
 
@@ -67,12 +72,14 @@ public class SessionBase : ComponentBase
 
     protected async Task OnSetUserStoryClickAsync()
     {
-        if(this.SessionViewModel is null)
+        if (this.SessionViewModel is null)
         {
             await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
             return;
         }
-        
-        await this.GameConnectionHub.NotifyNewUserStory(new UserStoryViewModel(this.SessionViewModel.SessionId, this.UserStory)).ConfigureAwait(false);
+
+        await this.GameConnectionHub
+            .NotifyNewUserStory(this.SessionId, new UserStoryViewModel(this.UserStory))
+            .ConfigureAwait(false);
     }
 }

@@ -39,19 +39,21 @@ public sealed class GameConnectionHub : IAsyncDisposable, IGameConnectionHub
         }
     }
 
-    public async Task NotifyNewPlayer(PlayerViewModel player)
+    public async Task NotifyNewPlayer(string sessionGroup, PlayerViewModel player)
     {
-        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewPlayer), player).ConfigureAwait(false);
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewPlayer), sessionGroup, player)
+            .ConfigureAwait(false);
     }
 
-    public async Task NotifyNewVote(PlayerVoteViewModel point)
+    public async Task NotifyNewVote(string sessionGroup, PlayerVoteViewModel point)
     {
-        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewVote), point).ConfigureAwait(false);
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewVote), sessionGroup, point).ConfigureAwait(false);
     }
 
-    public async Task NotifyNewUserStory(UserStoryViewModel userStory)
+    public async Task NotifyNewUserStory(string sessionGroup, UserStoryViewModel userStory)
     {
-        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewUserStory), userStory).ConfigureAwait(false);
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewUserStory), sessionGroup, userStory)
+            .ConfigureAwait(false);
     }
 
     public void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived)

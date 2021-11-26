@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using PointingPoker.Razor.Hubs;
 using PointingPoker.Razor.ViewModels;
 
@@ -14,6 +15,8 @@ public class PlayerBase : ComponentBase
 
     protected string UserStory { get; set; } = string.Empty;
 
+    private string SessionId => this.Model!.SessionId.ToString(CultureInfo.InvariantCulture);
+
     protected override async Task OnInitializedAsync()
     {
         this.GameConnectionHub.OnUserStoryReceived(this.ReceiveUserStory);
@@ -24,16 +27,11 @@ public class PlayerBase : ComponentBase
     {
         var playerVote = new PlayerVoteViewModel {PlayerId = this.Model!.Id, Points = vote};
 
-        await this.GameConnectionHub.NotifyNewVote(playerVote).ConfigureAwait(false);
+        await this.GameConnectionHub.NotifyNewVote(this.SessionId, playerVote).ConfigureAwait(false);
     }
 
     private void ReceiveUserStory(UserStoryViewModel userStoryViewModel)
     {
-        if(userStoryViewModel.SessionId != this.Model?.SessionId)
-        {
-            return;
-        }
-        
         this.UserStory = userStoryViewModel.Text;
         this.StateHasChanged();
     }

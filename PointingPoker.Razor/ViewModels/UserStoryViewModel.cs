@@ -1,3 +1,3 @@
 ﻿namespace PointingPoker.Razor.ViewModels;
 
-public record UserStoryViewModel(int SessionId, string Text);
+public record UserStoryViewModel(string Text);
