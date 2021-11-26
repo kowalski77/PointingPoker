@@ -4,10 +4,10 @@ using PointingPoker.Razor.ViewModels;
 
 namespace PointingPoker.Razor.Hubs;
 
-public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnectionHub
+public sealed class GameConnectionHub : IAsyncDisposable, IGameConnectionHub
 {
-    private readonly List<IDisposable> subscriptionCollection = new();
     private readonly HubConnection hubConnection;
+    private readonly List<IDisposable> subscriptionCollection = new();
 
     public GameConnectionHub(NavigationManager navigationManager)
     {
@@ -22,9 +22,18 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
             .Build();
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await this.hubConnection.DisposeAsync().ConfigureAwait(false);
+        foreach (var subscription in this.subscriptionCollection)
+        {
+            subscription.Dispose();
+        }
+    }
+
     public async Task StartAsync()
     {
-        if(this.hubConnection.State == HubConnectionState.Disconnected)
+        if (this.hubConnection.State == HubConnectionState.Disconnected)
         {
             await this.hubConnection.StartAsync().ConfigureAwait(false);
         }
@@ -50,25 +59,16 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
         this.subscriptionCollection.Add(subscription);
     }
-    
+
     public void OnVoteReceived(Action<PlayerVoteViewModel> onVoteReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewVote), onVoteReceived);
         this.subscriptionCollection.Add(subscription);
     }
-    
+
     public void OnUserStoryReceived(Action<UserStoryViewModel> onUserStoryReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewUserStory), onUserStoryReceived);
         this.subscriptionCollection.Add(subscription);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await this.hubConnection.DisposeAsync().ConfigureAwait(false);
-        foreach (var subscription in this.subscriptionCollection)
-        {
-            subscription.Dispose();
-        }
     }
 }
