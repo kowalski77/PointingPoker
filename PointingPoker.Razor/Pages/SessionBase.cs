@@ -31,6 +31,8 @@ public class SessionBase : ComponentBase
 
     protected bool IsConnected { get; private set; }
 
+    protected string UserStory { get; set; } = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
@@ -61,5 +63,16 @@ public class SessionBase : ComponentBase
             this.storagePlayer = await this.SessionStorage.GetItemAsync<string>("Player").ConfigureAwait(false);
             this.IsConnected = true;
         }
+    }
+
+    protected async Task OnSetUserStoryClickAsync()
+    {
+        if(this.SessionViewModel is null)
+        {
+            await this.NotificationService.Error("Ups!!! something went wrong...").ConfigureAwait(false);
+            return;
+        }
+        
+        await this.GameConnectionHub.NotifyNewUserStory(new UserStoryViewModel(this.SessionViewModel.SessionId, this.UserStory)).ConfigureAwait(false);
     }
 }

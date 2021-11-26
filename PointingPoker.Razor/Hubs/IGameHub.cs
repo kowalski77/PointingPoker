@@ -7,4 +7,6 @@ public interface IGameHub
     Task NotifyNewPlayer(PlayerViewModel player);
 
     Task NotifyNewVote(PlayerVoteViewModel point);
+    
+    Task NotifyNewUserStory(UserStoryViewModel userStory);
 }

@@ -16,4 +16,9 @@ public class GameHub : Hub<IGameClient>, IGameHub
     {
         await Clients.All.OnNewVote(point).ConfigureAwait(false);
     }
+
+    public async Task NotifyNewUserStory(UserStoryViewModel userStory)
+    {
+        await Clients.All.OnNewUserStory(userStory).ConfigureAwait(false);
+    }
 }

@@ -23,5 +23,14 @@ else
         // TODO: create Moderator component
         <h3>Session nº @this.SessionViewModel.SessionId</h3>
         <h4>Hi, @this.CurrentPlayer?.Name. You are the moderator.</h4>
+        <br />
+        <Addons>
+            <Addon AddonType="AddonType.Body">
+                <TextEdit Placeholder="User story"  @bind-Text="@this.UserStory"/>
+            </Addon>
+            <Addon AddonType="AddonType.End">
+                <Button Color="Color.Secondary" Clicked="@this.OnSetUserStoryClickAsync">Set</Button>
+            </Addon>
+        </Addons>
     }
 }

@@ -40,6 +40,11 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
         await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewVote), point).ConfigureAwait(false);
     }
 
+    public async Task NotifyNewUserStory(UserStoryViewModel userStory)
+    {
+        await this.hubConnection.InvokeAsync(nameof(IGameHub.NotifyNewUserStory), userStory).ConfigureAwait(false);
+    }
+
     public void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewPlayer), onPlayerReceived);
@@ -49,6 +54,12 @@ public sealed class GameConnectionHub : IGameHub, IAsyncDisposable, IGameConnect
     public void OnVoteReceived(Action<PlayerVoteViewModel> onVoteReceived)
     {
         var subscription = this.hubConnection.On(nameof(IGameClient.OnNewVote), onVoteReceived);
+        this.subscriptionCollection.Add(subscription);
+    }
+    
+    public void OnUserStoryReceived(Action<UserStoryViewModel> onUserStoryReceived)
+    {
+        var subscription = this.hubConnection.On(nameof(IGameClient.OnNewUserStory), onUserStoryReceived);
         this.subscriptionCollection.Add(subscription);
     }
 

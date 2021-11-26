@@ -4,7 +4,7 @@ public class PointsViewModel
 {
     public bool IsChecked { get; set; }
 
-    public int Value { get; set; }
+    public int Value { get; init; }
 
-    public string Display { get; set; } = string.Empty;
+    public string Display { get; init; } = string.Empty;
 }

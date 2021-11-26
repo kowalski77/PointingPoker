@@ -7,4 +7,6 @@ public interface IGameClient
     Task OnNewPlayer(PlayerViewModel player);
     
     Task OnNewVote(PlayerVoteViewModel point);
+    
+    Task OnNewUserStory(UserStoryViewModel userStory);
 }

@@ -8,9 +8,13 @@ public interface IGameConnectionHub
     
     Task NotifyNewVote(PlayerVoteViewModel point);
 
+    Task NotifyNewUserStory(UserStoryViewModel userStory);
+
     void OnPlayerReceived(Action<PlayerViewModel> onPlayerReceived);
     
     void OnVoteReceived(Action<PlayerVoteViewModel> onVoteReceived);
+
+    void OnUserStoryReceived(Action<UserStoryViewModel> onUserStoryReceived);
 
     Task StartAsync();
 }

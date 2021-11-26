@@ -3,5 +3,5 @@
 
 <p>Hello: @this.Model?.Name !</p>
 <p>Joined at : @this.Model?.TimeJoined.ToShortTimeString()</p>
-
+<TextEdit @bind-text="@this.UserStory"/>
 <Cards Items="@this.Points"  OnVote="@this.NotifyVote"/>
