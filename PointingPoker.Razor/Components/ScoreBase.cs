@@ -14,7 +14,7 @@ public class ScoreBase : ComponentBase
 
     [Inject] private IScoreCache ScoreCache { get; set; } = default!;
 
-    [CascadingParameter] PlayerViewModel? PlayerViewModel { get; set; }  
+    [CascadingParameter] private PlayerViewModel? PlayerViewModel { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -22,7 +22,7 @@ public class ScoreBase : ComponentBase
         this.GameConnectionHub.OnVoteReceived(this.ReceiveVote);
         await this.GameConnectionHub.StartAsync().ConfigureAwait(false);
 
-        InitializeScore();
+        this.InitializeScore();
     }
 
     private void InitializeScore()
@@ -32,7 +32,7 @@ public class ScoreBase : ComponentBase
             return;
         }
 
-        var sessionId = PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
+        var sessionId = this.PlayerViewModel.SessionId.ToString(CultureInfo.InvariantCulture);
         var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
         this.ScoreViewModels = new List<ScoreViewModel>(cachedScoreViewModels);
 
@@ -41,15 +41,15 @@ public class ScoreBase : ComponentBase
 
     private void ReceiveNewPlayer(PlayerViewModel player)
     {
-        if(this.PlayerViewModel?.SessionId != player.SessionId)
+        if (this.PlayerViewModel?.SessionId != player.SessionId)
         {
             return;
         }
-        
+
         var sessionId = player.SessionId.ToString(CultureInfo.InvariantCulture);
 
         var cachedScoreViewModels = this.ScoreCache.Get(sessionId)?.ToList() ?? new List<ScoreViewModel>();
-        if(cachedScoreViewModels.All(x => x.PlayerId != player.Id))
+        if (cachedScoreViewModels.All(x => x.PlayerId != player.Id))
         {
             cachedScoreViewModels.Add((ScoreViewModel)player);
             this.ScoreCache.Update(sessionId, cachedScoreViewModels);

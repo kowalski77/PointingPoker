@@ -7,3 +7,12 @@
     .zoom:hover {
         transform: scale(1.1); /* (110% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     }
+
+
+.poker-centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}

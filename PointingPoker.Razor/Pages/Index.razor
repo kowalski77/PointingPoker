@@ -4,21 +4,19 @@
 <PageTitle>Session</PageTitle>
 
 <h2>Hello, poker player!</h2>
-<br/>
+<br />
 <Field>
     <Check TValue="bool" @bind-Checked="@this.IsModerator">Join as Moderator</Check>
 </Field>
-<br/>
-<Column ColumnSize="ColumnSize.Is3">
-    <Row>
-        @if (this.IsModerator)
-        {
-            <CreateSession />
-        }
-        else
-        {
-            <JoinSession />
-        }
-    </Row>
-</Column>
+<br />
+<div>
+    @if (this.IsModerator)
+    {
+        <CreateSession />
+    }
+    else
+    {
+        <JoinSession />
+    }
+</div>
 

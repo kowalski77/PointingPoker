@@ -9,10 +9,7 @@ public class ScoreCache : IScoreCache
 
     public void Add(string key, IEnumerable<ScoreViewModel> scores)
     {
-        this.cache.Set(key, scores, new MemoryCacheEntryOptions
-        {
-            Size = 1
-        });
+        this.cache.Set(key, scores, new MemoryCacheEntryOptions {Size = 1});
     }
 
     public IEnumerable<ScoreViewModel> Get(string key)
@@ -23,12 +20,9 @@ public class ScoreCache : IScoreCache
     public void Update(string key, IEnumerable<ScoreViewModel> scores)
     {
         this.cache.Remove(key);
-        this.cache.Set(key, scores, new MemoryCacheEntryOptions
-        {
-            Size = 1
-        });
+        this.cache.Set(key, scores, new MemoryCacheEntryOptions {Size = 1});
     }
-    
+
     public void Remove(string key)
     {
         this.cache.Remove(key);
