@@ -5,6 +5,11 @@
 @foreach (var player in ScoreViewModels)
 {
     <div>
-        Player: @player.PlayerName - <p class="@this.VoteClass">Points: @player.Points</p>
+        @if (!string.IsNullOrEmpty(player.Points))
+        {
+            <i class="fas fa-check"></i>    
+        }
+        Player: @player.PlayerName -
+        <p class="@this.VoteClass">Points: @player.Points</p>
     </div>
 }
