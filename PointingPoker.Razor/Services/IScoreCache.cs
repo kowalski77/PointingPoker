@@ -6,7 +6,7 @@ public interface IScoreCache
 {
     void Add(string key, IEnumerable<ScoreViewModel> scores);
     
-    IEnumerable<ScoreViewModel> All(string key);
+    IEnumerable<ScoreViewModel>? All(string key);
     
     void Update(string key, IEnumerable<ScoreViewModel> scores);
     

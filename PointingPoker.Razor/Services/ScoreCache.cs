@@ -12,7 +12,7 @@ public class ScoreCache : IScoreCache
         this.cache.Set(key, scores, new MemoryCacheEntryOptions {Size = 1});
     }
 
-    public IEnumerable<ScoreViewModel> All(string key)
+    public IEnumerable<ScoreViewModel>? All(string key)
     {
         return this.cache.Get<IEnumerable<ScoreViewModel>>(key);
     }
